@@ -472,7 +472,6 @@ export class MenuScanner {
     }
 
     this.announcedAutoZoom = 0;
-
     // From here on lighting + content are OK — start the best-shot clock.
     if (!this.goodSince) this.goodSince = Date.now();
     const bestShotDue = Date.now() - this.goodSince > BEST_SHOT_MS;
