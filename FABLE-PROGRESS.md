@@ -29,3 +29,16 @@ Mission for this run, per the trigger prompt: act as a founder-level product str
 **Step 5 — decision document written (done).** FABLE-ONE-WINDOW-RUNBOOK.md created at the repo root with all ten required sections. The recommendation: **MenuVoice Verified** — a hosted, restaurant-confirmed accessible menu page (`/m/{slug}`) that restaurants pay for, integrated into the consumer app as instant trusted data with upgraded allergen wording. Five opportunities were weighed (restaurant-facing verified menus, consumer verified-menu network, enterprise chain deals, blind-community distribution blitz, platform integrations); O1 wins because it is the only one with a proven paying buyer (Good Food Talks precedent), an active forcing function (2025 ADA lawsuit wave targeting restaurant menu PDFs), a defense against free AI (restaurant confirmation is the one thing Be My AI cannot replicate), and a direct fix for the app's own hardest problem (inferred, hedged menu data). The document includes validation-before-code steps, a lean build order, explicit do-not-build list, legal-positioning cautions, and a complete implementation prompt for the next Fable run.
 
 **Step 6 — wrap-up.** No product code was changed, per the brief. Committing the two documents and opening a draft PR.
+
+---
+
+## Follow-up run — 2026-07-06 (afternoon): master to-do compilation
+
+User request: merge the two independent reports — this session's Fable strategic analysis + July-3 audit, and the ChatGPT/Codex report — into one easy-to-implement master list, then extend it with more problems and value ideas. A continuation is scheduled for exactly 2h50m after this run started (trigger trig_019Zp8BPJav5RnUhEYUMejyP); if the main deliverable is done by then, that run expands the list by another 25 items.
+
+**Done in this run:**
+- Recovered the full July-3 audit findings from git history (commit e029b41): ranked S1 (safety/trust), S2 (core-loop), S3 (friction) findings with exact file/line locations.
+- Cross-checked against the ChatGPT/Codex report the user pasted — its six headline issues map to audit findings S1-1, S2-1, S1-2, S1-3, S1-4, S2-4/S2-5; the two reports agree on what blocks real-user testing.
+- Created **TODO.md** at the repo root, the single master file: Top 20 fixes ranked most-important-first (each with problem, why, exact files/lines, fix direction, and done-when criteria), then 25 more problems, then 25 value ideas (product/business/code/customer discovery). Items 1–9 are the "trust and safety pass" both reports say must precede real blind-user testing.
+- Verified one Codex claim in the working tree: the "Safe for you" shellfish copy exists in THREE marketing files (website/index.html:578, public/website/index.html:577, menuvoice-site/v3/index.html:63) — recorded as TODO item 21.
+- Nothing implemented yet by design: this run's deliverable is the compiled, ranked, implementable queue. TODO.md items 1–9 are sized as copy/gating fixes, not architecture.
