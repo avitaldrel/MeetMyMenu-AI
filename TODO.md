@@ -197,7 +197,39 @@ Ranked roughly by expected value. #1 is the strategic pick from FABLE-ONE-WINDOW
 
 ---
 
+## PART 4 — EXPANSION: 25 MORE ITEMS (same-session extension)
+
+Security, resilience, operations, and go-to-market items not covered above.
+
+71. **Untrusted menu text hits the DOM** — parsed menu content comes from LLMs reading arbitrary websites; audit every render path for injection (dangerouslySetInnerHTML, unescaped strings) and strip control characters/HTML from all menu fields client-side. One hostile restaurant page should never be able to script the app.
+72. **No security headers** — add CSP, X-Frame-Options, Referrer-Policy via `vercel.json` headers; cheap hardening before any pilot traffic.
+73. **Events endpoint origin check robustness** — verify `api/events.ts` rejects requests with *no* Origin/Referer header rather than defaulting open; sendBeacon same-origin always sends one.
+74. **No CI** — add a GitHub Action running `npm run build`, `npm test`, and the a11y audit on every PR; today only Vercel's deploy implicitly checks anything, and broken tests can merge silently.
+75. **Turn the audit dogfood into a repeatable Playwright suite** — the July-3 audit's 8 headless scenarios (onboarding, find-fail, browse, allergen profile, app-voice-off, etc.) as `tests/e2e/`; regressions like S2-1 become catchable in CI instead of by quarterly audit.
+76. **Open-PR triage** — PRs #6/#7/#9 carry partial voice-input and camera work; review each, merge the safe parts or close them. Stale half-merged branches are how the same bug gets fixed twice.
+77. **Postgres indexes on events** — add (session_id), (user_email, ts), (event_name, ts) before the table grows; the dashboard's window queries will degrade quietly otherwise.
+78. **Data retention + PII policy** — events store full conversation text keyed to user_email; define a retention window, a delete-my-data path, and document it. Required before recruiting real blind testers, let alone restaurants.
+79. **Privacy policy + terms pages** — needed for app directory listings (AppleVis), Google OAuth verification, and any paid pilot; one honest page each, no boilerplate lies.
+80. **PWA manifest + icons** — verify manifest/add-to-home-screen works on iOS; testers should launch MenuVoice like an app, not hunt a Safari tab at the table.
+81. **Screen wake lock during conversation** — a phone that sleeps mid-meal kills the session; use the Wake Lock API with a sensible fallback.
+82. **Audio interruption recovery** — a phone call or Siri activation mid-conversation should pause cleanly and offer "resume" — test and handle `audio` interruption events.
+83. **Client-side image downscale before OCR upload** — full-resolution photos over restaurant Wi-Fi are slow and expensive; resize to ~1600px longest edge before upload, keep OCR quality.
+84. **Server-side menu parse cache** — key by URL content hash; repeat lookups of the same restaurant should cost zero OpenAI tokens and return in milliseconds. Directly cuts the biggest variable cost.
+85. **"That's wrong" voice command** — logs a correction event with the current dish/context; the feedback loop (PROGRESS Feature 7) starts as one intent + one event row, not a whole flow.
+86. **Scheduled regression audit** — re-run the unattended Fable audit monthly via a Routine; diff against the previous findings and append deltas to this file automatically.
+87. **Contributor/agent onboarding doc** — a single INDEX.md mapping the 12+ root markdown files (which is current, which is historical); every new agent session burns time rediscovering this.
+88. **Archive stale docs** — move SMOKE-RESULTS.md, CARTESIA-VOICE-TEST.md, BUILD_NOTES.md into `docs/archive/`; stale status docs actively mislead future runs.
+89. **Track "allergen warning heard" as an event** — proof the safety feature fires in production, and the exact number a restaurant pilot report should cite ("N allergen warnings delivered").
+90. **Pilot metro memo** — pick one corridor (e.g., Montclair/Bloomfield/Newark), list 25 target restaurants with cuisine, PDF-menu status, and contact; turns "talk to restaurants" into a checklist.
+91. **NFB national convention timing** — it happens in July; even without a booth, chapter contacts made this month convert to testers and pilot intros. Calendar the outreach.
+92. **Pitch the blind-media circuit** — Blind Abilities and AppleVis podcast covered Menus4All repeatedly; a working demo + founder story is exactly their content. Earned distribution, zero cost.
+93. **Post-session referral prompt** — after a successful order-decision session, one spoken sentence: "If this helped, you can share MenuVoice with a friend" + Web Share. The blind community is tight-knit; word of mouth is the channel.
+94. **Restaurant pipeline CRM** — a simple sheet (restaurant, contact, stage, objection, next step) plus an interview-notes template; discovery without records is anecdotes.
+95. **Define the kill criteria in writing** — before the pilot: "if 10 restaurant conversations produce zero willingness to pay at any price, we stop and pivot to O4+O2." Pre-committing prevents sunk-cost drift.
+
+---
+
 ## Progress log for this compilation
 
 - 2026-07-06: Compiled from Fable audit (e029b41), ChatGPT/Codex report, FIXES-NEEDED.md, REVIEW.md, FABLE-ONE-WINDOW-RUNBOOK.md. Top 20 ranked; both AI reports agree on items 1–7 as the pre-user-testing blockers. Nothing here is implemented yet — this file is the queue.
-- Next scheduled continuation: expand with 25 more items if the earlier parts are complete.
+- 2026-07-06 (same session, capacity remaining): Part 4 expansion added — items 71–95 covering security hardening, CI/regression testing, data/PII policy, cost controls, and go-to-market operations. Total: 95 items. A scheduled continuation (2h50m after session start) will verify state and extend further if warranted.
