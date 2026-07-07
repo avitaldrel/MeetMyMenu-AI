@@ -229,7 +229,40 @@ Security, resilience, operations, and go-to-market items not covered above.
 
 ---
 
+## PART 5 — CONTINUATION EXPANSION: 25 MORE ITEMS (scheduled run, +2h50m)
+
+Ground not covered in Parts 1–4: interaction channels beyond speech, dietary breadth, testability, distribution channels nobody is working, and the long-game data position.
+
+96. **Haptic cues via the Vibration API** — restaurants are loud; earcons get missed. Vibrate on photo captured, mic open, mic closed, reply ready. A second, audio-independent feedback channel for the exact environment the app targets (no-op gracefully on iOS Safari where unsupported).
+97. **Speech rate and verbosity controls** — experienced blind users listen at 2–3x; fixed-rate TTS is daily friction. Add a profile speech-rate setting plus deterministic voice commands ("faster", "slower", "less detail") handled locally like EXIT_PHRASES, no LLM round-trip.
+98. **Braille display pass** — VoiceOver users with refreshable braille displays read MenuDocument character-by-character; audit for over-long aria-labels (the folded dish h3 may be a 200-character braille line), decorative punctuation, and repeated words. Cheap to check, signals real depth to the community.
+99. **Dietary filters beyond allergens** — "anything vegan?" / vegetarian / halal / kosher are among the most common menu questions; add deterministic tagging at parse time plus a browse filter and voice intent, with the same explicit-vs-inferred honesty rules as allergens.
+100. **"What is guanciale?" fast path** — unfamiliar-term explanations are a core use case for unfamiliar cuisines; cache term definitions per menu so repeat asks are instant and cheap, and offer "explain this dish" as a rotor action.
+101. **"Where was I?" reading resume** — interruptions are constant at a table (waiter arrives mid-category); remember the last-read position in the menu and support a "continue" command instead of restarting the category.
+102. **Numbered dish references** — assign spoken numbers per category ("Number 3, the carbonara…") so users can say "tell me about number three" instead of pronouncing dish names Whisper will mishear. Big STT-accuracy win for foreign-language menus.
+103. **Staleness threshold audit** — `freshnessOf` exists, but verify every path (saved reopen, verified, find-by-name cache) actually speaks "this menu may be outdated" past ~90 days; a silently stale saved menu is a trust failure identical to a wrong one.
+104. **Synthetic uptime monitoring** — extend the morning cron to ping /api/chat and /api/find-menu hourly with a canned request and email/alert on failure; a dead OpenAI key or exhausted quota should page you, not surface as a blind user's failed dinner.
+105. **Make preview deployments testable** — Vercel preview envs lack the server env vars, which is partly why the audits couldn't verify D3; add preview-scoped keys (rate-limited) so every PR gets a fully working test URL.
+106. **Demo mode with canned data** — a seeded restaurant + scripted answers that work with zero API calls; lets device testers, restaurant demos, and screenshots run offline without burning tokens, and makes the app testable in sandboxes that block OpenAI.
+107. **Bundle/perf audit on throttled 3G** — the table-side load matters on restaurant Wi-Fi; measure first load and TTS start latency at 3G throttle, code-split screens, and lazy-load anything not needed for Home.
+108. **Shared API contract types + runtime validation** — `ParsedMenu` shape drift between `api/` and `src/` caused real crashes (TODO #6); extract one shared types module and validate at the boundary with zod (or hand-rolled guards) on both sides.
+109. **Internal session-replay viewer** — the events table already stores full conversation timelines; a small internal page that reconstructs a session (screens, utterances, replies, errors, timings) turns every confusing bug report into a replayable trace.
+110. **Pricing signal test on the marketing site** — a "Pricing" page with two tiers and a "get started" click, before the product exists; click-through data on $29 vs $49 costs nothing and informs the pilot offer.
+111. **ADA-defense law firm channel** — the 2025 lawsuit wave means defense attorneys constantly advise restaurant clients on remediation; introduce MenuVoice to 5 firms/consultancies as the recommended menu fix. One relationship could feed a steady pipeline.
+112. **Vocational-rehabilitation agency channel** — state VR agencies and AT specialists recommend and buy assistive tech for blind clients; get MenuVoice listed in AT resource catalogs (free) and brief 2–3 NJ counselors. Users arrive pre-trusting.
+113. **Restaurant staff one-pager** — "A diner may use MenuVoice at your table; here's what that looks like and how to help" — makes pilot restaurants better hosts, reduces awkward moments, and doubles as sales collateral.
+114. **Testimonial capture flow** — after a session with a saved order, ask once (spoken + button): "May we quote your experience?" Real quotes from real blind diners are the single strongest asset for both the restaurant pitch and community trust — and there are currently zero.
+115. **Accessible dining night** — one evening with an NFB chapter at a founding-partner restaurant: 10 real users, the restaurant sees the value live, local press gets a story, and every open "needs real device testing" item gets exercised in one event.
+116. **Competitor watch ritual** — quarterly 30-minute check on Menus4All, Good Food Talks/Nutritics (US moves?), Be My AI, and BentoBox accessibility features; log deltas in a doc so strategy reacts to facts, not memory.
+117. **Data licensing groundwork** — verified, structured menu + allergen data has standalone value (ordering platforms, nutrition apps, agents); make sure the restaurant agreement grants MenuVoice the right to serve the data through partners, before contract #1 is signed. Retro-fitting this is painful.
+118. **schema.org/Menu markup on verified pages** — machine-readable structured data on `/m/{slug}` pages: SEO for "accessible menu {restaurant}", and it makes the verified page the canonical menu source for any crawler or assistant.
+119. **Position verified pages for AI agents** — voice assistants and LLM agents increasingly answer "what's on the menu at X?"; stable URLs, clean structured data, and an honest freshness field make MenuVoice pages the source agents cite — distribution that compounds with zero marketing.
+120. **Monthly "state of MenuVoice" memo ritual** — one page, founder-written from the dashboard numbers and this file: what moved, what's stuck, next month's three bets. The compounding discipline every solo project loses without a ritual — and the raw material for investor/grant conversations later.
+
+---
+
 ## Progress log for this compilation
 
 - 2026-07-06: Compiled from Fable audit (e029b41), ChatGPT/Codex report, FIXES-NEEDED.md, REVIEW.md, FABLE-ONE-WINDOW-RUNBOOK.md. Top 20 ranked; both AI reports agree on items 1–7 as the pre-user-testing blockers. Nothing here is implemented yet — this file is the queue.
 - 2026-07-06 (same session, capacity remaining): Part 4 expansion added — items 71–95 covering security hardening, CI/regression testing, data/PII policy, cost controls, and go-to-market operations. Total: 95 items. A scheduled continuation (2h50m after session start) will verify state and extend further if warranted.
+- 2026-07-06 (scheduled continuation, +2h50m, fired on time): verified the main deliverable and Part 4 were complete and pushed, then added Part 5 — items 96–120: interaction channels beyond speech (haptics, braille, speech rate), dietary breadth, numbered dish references, testability infrastructure (preview envs, demo mode, session replay, shared contracts), new distribution channels (ADA-defense firms, VR agencies, dining-night events), and long-game data positioning (licensing terms, schema.org markup, AI-agent readiness). Total: 120 items.
