@@ -168,6 +168,66 @@ a real gap for a user who can't glance at a thumbnail to judge a bad photo.
     the last photo disappears; tap "Read menu" with a flagged photo present
     and confirm the confirmation message, then tap again to proceed.
 
+### 8. Allergy warning spoken at the end of a dish instead of the start
+**Reported:** the allergy warning should be at the start of the dish in
+browse mode, not the end.
+**Fix:** `src/lib/allergens.ts` — moved the dish-label composition (previously
+a local, untested function inside `ConversationScreen.tsx`) into a new
+exported `dishSpokenLabel()`. The allergen warning now comes FIRST, before
+name/price/description/ingredients — a guest with a severe allergy should not
+have to listen through the whole dish to reach the warning that tells them to
+skip it. `src/screens/ConversationScreen.tsx` now imports and uses
+`dishSpokenLabel()` instead of its old local `dishLabel()`.
+**Verified:** 3 new unit tests in `tests/allergens.test.ts` — warning-first
+ordering, no warning prefix when there are no other allergens, and that the
+rest of the dish info still follows. All 42 project tests pass, `npx tsc
+--noEmit` clean.
+
+### 9. Browse mode toggle didn't bring the user down to the organized menu
+**Reported:** tapping Browse mode should bring the user down to the organized
+(browse) section of the page.
+**Fix:** `src/screens/ConversationScreen.tsx` — `toggleSpeakMode()` already
+called `.focus()` on the menu heading when entering Browse Menu, but relied
+on the browser's implicit focus-scroll behavior, which is inconsistent
+across browsers (especially Safari) for non-form elements. Now calls
+`.focus({ preventScroll: true })` followed by an explicit
+`.scrollIntoView({ behavior: 'smooth', block: 'start' })`, so the scroll is
+guaranteed rather than incidental.
+**Verified:** `npx tsc --noEmit` clean. Confirmed with a real Playwright
+browser run (`test-bugfixes.mjs`) against the live dev server: the `.screen`
+container's `scrollTop` moved from `0` to `611px` after tapping the toggle,
+the "Menu categories" heading landed inside the viewport, and
+`document.activeElement` was confirmed to be that heading (VoiceOver/focus
+correctly lands there too).
+
+### 10. Redundant TTS voice picker in Settings
+**Reported:** remove the extra/redundant voice options in Settings.
+**Fix:** `src/screens/SettingsScreen.tsx` — removed the 6-option TTS voice
+picker (shimmer/nova/alloy/echo/fable/onyx radio group) and its now-unused
+`VOICES` constant. Settings keeps the one voice-related control that matters
+for accessibility: the "App voice" on/off toggle. `profile.ttsVoice` still
+defaults to `'shimmer'` internally (`types.ts`'s `EMPTY_PROFILE`) — only the
+UI for picking a different cosmetic voice was removed, not the underlying
+default.
+**Verified:** `npx tsc --noEmit` clean, all 42 tests pass. **Interpretation
+call:** "over voice options" was read as "the excess/redundant voice
+options" (the picker), as distinct from the essential "App voice" toggle —
+flag if this wasn't the intended scope.
+
+### 11. Unnecessary fluff text
+**Reported:** remove text that isn't necessary, like added fluff.
+**Fix:** `src/screens/HomeScreen.tsx` — removed the decorative marketing
+tagline ("Point, ask, and order. The menu, read aloud and ready to talk.")
+under the MenuVoice title. It added VoiceOver navigation overhead before the
+actionable buttons without guiding any action.
+**Scope note:** this was a full app-wide copy audit was NOT attempted here —
+that's a larger task already tracked as backlog item B11 in
+`FIXES-NEEDED.md` ("Copy audit for VoiceOver-first screens"). This fix
+targeted the one clearly decorative, non-actionable piece of copy found
+while working the other three bugs in this batch. Let me know if a fuller
+pass across all screens is wanted.
+**Verified:** `npx tsc --noEmit` clean, all 42 tests pass.
+
 ---
 
 ## How to verify a fix locally
