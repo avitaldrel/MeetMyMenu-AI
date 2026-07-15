@@ -228,6 +228,93 @@ while working the other three bugs in this batch. Let me know if a fuller
 pass across all screens is wanted.
 **Verified:** `npx tsc --noEmit` clean, all 42 tests pass.
 
+### 12. Onboarding used voice/mic for name and allergies, and had an extra welcome screen
+**Reported:** turn off voice mode for allergies and name during onboarding — just have
+them type it; also remove the screen that says "Start Menu Voice" shown right after
+entering an email, before the app starts.
+**Fix:** `src/screens/OnboardingScreen.tsx` — rewritten:
+  - Removed the `'intro'` step (the "Welcome to MenuVoice... Start setup" screen).
+    Onboarding now goes straight from Login into the name question.
+  - Replaced `VoiceStep` (mic recording + Whisper transcription) with a plain
+    `TypeStep` (text input only) for both the name and allergies questions. Name and
+    allergies are the two fields where a mishearing is costliest (a wrong allergen is
+    a safety issue, see bug 8 and `FIXES-NEEDED.md` B8), so voice input on these two
+    specific fields is removed — screen readers can still use the device's own
+    dictation keyboard, this only removes the app's separate in-app recording flow.
+  - `finish()` still runs the typed input through the existing `cleanName()` /
+    `parseList()` / `normalizeAllergens()` safety pipeline, unchanged.
+**Verified:** `npx tsc --noEmit` clean, all 42 tests pass (no test changes needed —
+this is a UI-only removal, no new pure logic). Walked the full flow in a live
+Chromium session against the local dev server: fresh login → lands directly on
+"What should I call you?" (no intro screen, no mic button) → typed "Sarah" → Next →
+"Any food allergies?" (no mic button) → typed "peanuts" → Finish → landed on Home →
+confirmed in Settings that name "Sarah" and allergy "peanuts" both persisted
+correctly.
+
+### 14. Resume Voice Conversation stayed silent when voice was "paused"
+**Reported:** on the conversation screen, if the person pauses the voice and then
+clicks Resume Voice Conversation, it won't play, because voice is paused. That is
+the one scenario that should override the pause and play.
+**Root cause:** there were TWO independent silencers: the global Pause state
+(PauseContext) and a persistent "App voice" profile gate inside `speech.ts`
+(`_appVoiceOn`, set by the Settings toggle and loaded from localStorage). Resume
+only cleared the first one; if the profile gate was off, `speak()` returned
+early no matter what the user tapped, so resuming looked like it did nothing.
+**Fix:** `src/lib/speech.ts` — removed the `_appVoiceOn` gate entirely
+(`setAppVoice`, `isAppVoiceOn`, the localStorage read). The pause state is now
+the ONE voice switch, and resuming the conversation always brings speech back.
+`src/state/ProfileContext.tsx` and `src/types.ts` dropped the appVoice wiring.
+**Verified:** live Chromium run — opened Demo Menu, tapped the floating Pause
+Voice button (both buttons flipped to their resume labels), tapped Resume Voice
+Conversation, and the phase indicator immediately showed "MenuVoice is
+speaking..." before reopening the mic. All 48 tests pass, tsc clean.
+
+### 15. No guidance about screen readers or the Pause button in conversation mode
+**Reported:** (a) entering conversation mode should mention, as a short text
+note, that the user can turn VoiceOver off and speak more naturally, though
+they don't have to; (b) somewhere should explain that Pause silences the voice
+across the app and clicking again resumes.
+**Fix:** `src/screens/ConversationScreen.tsx` — one short `role="note"`
+paragraph under the mode toggle covering both: "In Conversation Mode you can
+turn your screen reader off and talk naturally, if you prefer. You do not have
+to. If voices talk over each other, tap Pause Voice at the top to silence
+MenuVoice. Tap it again to resume."
+**Verified:** live Chromium run — note renders on the conversation screen for
+the Demo Menu; visible to sighted users and reachable as a note by VoiceOver.
+
+### 16. App voice talked outside conversation mode
+**Reported:** turn off all the talking parts in anything that's not
+conversation mode; everything can be read by VoiceOver in text.
+**Fix:** app TTS now exists ONLY on the conversation screen.
+  - `src/screens/LoginScreen.tsx`, `OnboardingScreen.tsx`, `SettingsScreen.tsx`,
+    `SavedScreen.tsx`, `FindScreen.tsx` — every `speak()` call removed; each
+    message already had (or now has) a `role="status"` aria-live region, so
+    VoiceOver announces it from the DOM instead.
+  - `src/screens/CaptureScreen.tsx` — all `speak()`/`coach()` scanner coaching
+    removed; the coaching live region (previously silenced while app voice was
+    on) is now always `aria-live="polite"`. Earcons (ticks, shutter) remain as
+    non-speech cues.
+  - `src/lib/speech.ts` — `coach()`/`stopCoach()` deleted (dead code).
+  - FindScreen's "What are you doing?" button now re-fires the live region
+    (clear, then re-set) instead of speaking, since aria-live only announces
+    on change.
+**Verified:** `grep` proves `speak`/`createStreamingSpeech` are imported only
+by `ConversationScreen.tsx` (CaptureScreen/PauseContext import only
+`stopSpeaking`), so no other screen CAN talk. Live Chromium walk of login →
+onboarding → home → settings with a clean console. All 48 tests pass.
+
+### 17. Remove the remaining voice option in Settings
+**Reported:** remove the voices options (follow-up to bug 10, which removed
+the six-voice picker; the "App voice" on/off toggle remained).
+**Fix:** `src/screens/SettingsScreen.tsx` — App voice toggle removed. With
+bugs 14/16, it was redundant: nothing outside conversation talks anymore, and
+the global Pause Voice button covers conversation. Settings now has zero
+voice-related controls.
+**Verified:** live Chromium run — Settings page shows no App voice card.
+`appVoice` removed from `UserProfile` (old stored profiles simply carry an
+ignored extra key). All 48 tests pass, tsc clean.
+
+
 ---
 
 ## How to verify a fix locally
