@@ -1391,7 +1391,7 @@ html[data-a11y-font="readable"] {
   function initWave(canvas, opts) {
     if (!canvas || !canvas.getContext) return;
     var ctx = canvas.getContext('2d');
-    var t = 0, raf;
+    var t = 0, raf, visible = true;
     opts = opts || {};
     var layers = opts.layers || [
       { freq: 0.008, amp: 0.16, speed: 0.014, alpha: 0.52, w: 1.8 },
@@ -1439,7 +1439,21 @@ html[data-a11y-font="readable"] {
       });
 
       t++;
-      raf = requestAnimationFrame(draw);
+      // Pause the loop while scrolled out of view; resumes via the observer.
+      if (visible) raf = requestAnimationFrame(draw);
+    }
+
+    // Animate by default; IO only PAUSES when it positively reports the canvas
+    // off screen. IO callbacks never fire in some embedded/iframe contexts (see
+    // the reveal fallback below), so pausing must never be the initial state.
+    if (!reduce && 'IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          var was = visible;
+          visible = e.isIntersecting;
+          if (visible && !was) { cancelAnimationFrame(raf); raf = requestAnimationFrame(draw); }
+        });
+      }, { threshold: 0.05 }).observe(canvas);
     }
 
     resize();
@@ -1503,7 +1517,23 @@ html[data-a11y-font="readable"] {
       }
 
       t++;
-      requestAnimationFrame(draw);
+      // Static bars need one paint, not a 60fps loop redrawing the same frame.
+      if (!reduce && visible) raf = requestAnimationFrame(draw);
+    }
+
+    // Only animate while on screen; a hidden or scrolled-away canvas burning
+    // frames is pure battery cost on the phones this audience actually uses.
+    // Animate by default; IO only PAUSES on a positive off-screen report,
+    // because IO callbacks never fire in some embedded/iframe contexts.
+    var raf, visible = true;
+    if (!reduce && 'IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          var was = visible;
+          visible = e.isIntersecting;
+          if (visible && !was) { cancelAnimationFrame(raf); raf = requestAnimationFrame(draw); }
+        });
+      }, { threshold: 0.05 }).observe(canvas);
     }
 
     resize();
