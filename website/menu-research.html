@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The business case for an accessible online menu | Meet My Menu</title><meta name="description" content="Most new diners read the menu online before choosing where to eat. Research on how an accessible, structured menu decides whether a restaurant is even considered.">
+<link rel="icon" type="image/png" href="meetmymenu-logo.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css">
+<link rel="icon" type="image/png" href="/meetmymenu-logo.png">
+<style>
+.skip-link{position:fixed;left:16px;top:12px;z-index:1000;padding:10px 14px;border-radius:8px;background:var(--accent);color:var(--accent-text);font-weight:700;transform:translateY(-180%)}.skip-link:focus{transform:translateY(0)}
+.inner-main{padding:clamp(54px,8vw,96px) 0 clamp(80px,10vw,128px)}
+.inner-hero{max-width:860px;margin-bottom:clamp(52px,7vw,88px)}
+.inner-hero .display{font-size:clamp(40px,6vw,72px);margin:18px 0 24px}
+.inner-hero .lede{max-width:64ch}
+.article-meta{font:500 11px/1.4 var(--font-mono);letter-spacing:.15em;text-transform:uppercase;color:var(--accent)}
+.page-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(260px,.55fr);gap:clamp(36px,7vw,88px);align-items:start}
+.page-copy{max-width:760px}.page-copy h2{font:500 clamp(28px,4vw,42px)/1.14 var(--font-display);letter-spacing:-.02em;margin:56px 0 18px}.page-copy h2:first-child{margin-top:0}.page-copy h3{font-size:20px;margin:32px 0 8px;color:var(--text-primary)}.page-copy p,.page-copy li{color:var(--text-secondary)}.page-copy ul{padding-left:22px}.page-copy li{margin:7px 0}.page-copy strong{color:var(--text-primary)}
+.side-card,.callout{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:clamp(22px,3vw,32px)}
+.side-card{position:sticky;top:96px}.side-card h2{font:500 24px/1.15 var(--font-display);margin:0 0 14px}.side-card ul{list-style:none;padding:0;margin:0}.side-card li{color:var(--text-secondary);font-size:15px;padding:11px 0;border-bottom:1px solid var(--border)}.side-card li:last-child{border-bottom:none}.side-card .stat{color:var(--accent);font-weight:700}
+.callout{border-color:var(--accent);margin:38px 0}.callout p{color:var(--text-primary);margin:0;font:500 20px/1.4 var(--font-display)}
+.data-table{width:100%;border-collapse:collapse;margin:22px 0;font-size:15px}
+.data-table caption{text-align:left;color:var(--text-muted);font-size:13px;margin-bottom:10px}
+.data-table th,.data-table td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--border)}
+.data-table th{color:var(--text-primary);font-weight:700}
+.data-table td.num,.data-table th.num{text-align:right;font-variant-numeric:tabular-nums}
+.page-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+.source-list{margin:0;padding:0;list-style:none}.source-list li{font-size:14px;color:var(--text-secondary);padding:9px 0;border-bottom:1px solid var(--border-soft)}.source-list li:last-child{border-bottom:none}
+.disclaimer{color:var(--text-muted);font-size:14px;font-style:italic;margin-top:28px}
+.nav-links a[aria-current="page"]{color:var(--accent)}
+@media(max-width:820px){.page-grid{grid-template-columns:1fr}.side-card{position:static}}
+</style></head>
+<body><a class="skip-link" href="#main-content">Skip to main content</a><header class="site-head" id="head">
+  <nav class="nav" aria-label="Main navigation">
+    <a class="brand" href="index.html" aria-label="Meet My Menu home"><span class="mark" aria-hidden="true"><i></i></span><span><b>Meet My</b><span class="v"> Menu</span></span></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="partners.html">Partners</a>
+      <a href="blog.html" aria-current="page">Blog</a>
+      <a class="btn btn-primary" href="https://app.meetthemenu.com/">Open the app</a>
+    </div>
+  </nav>
+</header><main id="main-content" class="inner-main"><div class="wrap">
+<section class="inner-hero">
+  <p class="article-meta">Research &middot; July 2026</p>
+  <h1 class="display">The business case for an <em>accessible online menu.</em></h1>
+  <p class="lede">Most people decide whether to try an unfamiliar restaurant before they walk in, call, or reserve, and the piece of information they check most is the menu. A clear, machine-readable menu is not a sale by itself, but it often decides whether the restaurant gets the chance to make the sale at all.</p>
+</section>
+<div class="page-grid">
+<article class="page-copy">
+
+<h2>Menus decide who gets considered</h2>
+<p>Before choosing a new restaurant, U.S. diners research online first, and the menu leads. <strong>85%</strong> look at the menu online, <strong>80%</strong> at the website, and <strong>64%</strong> run a Google search (TouchBistro 2024). In a separate survey, <strong>32%</strong> always check a restaurant's website and <strong>51%</strong> sometimes do, only 4% never (Toast). An earlier study found <strong>69%</strong> said the website helped them decide whether to dine there (MGH 2019).</p>
+<p>Diners use the online menu to choose between competing restaurants, well before they decide to visit.</p>
+
+<h3>An unreadable menu loses customers silently</h3>
+<p>Among consumers likely to check restaurant websites (MGH 2019): <strong>68%</strong> had been discouraged from visiting because of a website; <strong>30%</strong> because the menu was hard to read; <strong>36%</strong> had abandoned a takeout order for the same reason. This loss is invisible. The customer doesn't complain. They pick a competitor.</p>
+
+<h3>Menu quality, not mere existence, moves intent</h3>
+<p>A peer-reviewed study (<em>International Journal of Hospitality Management</em>) modeled the mechanism: menu visual appeal drives desire for food, informativeness drives perceived convenience, and both drive purchase intention. It measured intention, not verified revenue, but the mechanism is clear: descriptions, categories, and dietary detail persuade more than names and prices alone.</p>
+
+<h2>The accessibility market and legal exposure</h2>
+<p>This is the strongest differentiated argument, and it is measurable. About <strong>8.5 million</strong> Americans are blind or have serious difficulty seeing (AFB, 2024), and <strong>49.5 million</strong> adults report some vision loss, an audience growing as the population ages.</p>
+<p>The formats most restaurants publish exclude these diners. In WebAIM's 2024 screen-reader survey, <strong>75%</strong> said PDFs cause significant accessibility problems, and menus have ranked among the most problematic web elements for over a decade. An image-only menu is, to a screen reader, a blank rectangle: no text to read, search, translate, or enlarge.</p>
+<p><strong>The core point:</strong> real text, semantic headings, and structured items make a menu good for a blind user. The same properties make it good for search engines, AI assistants, and anyone reading on a phone. Accessibility and discoverability are the same engineering problem.</p>
+<p>The legal exposure is real: over <strong>4,000</strong> ADA Title III web-accessibility lawsuits were filed in 2024, plaintiffs target restaurants at a high rate, courts treat WCAG 2.1 AA as the standard, and an estimated 95%+ of sites fail it. An accessible text menu is a high-value, low-effort step to reduce that exposure.</p>
+
+<h2>The shift to AI, voice, and "near me" search</h2>
+<p>Search is now mobile and local-intent driven. <strong>60%+</strong> of restaurant searches are on mobile; "food near me" searches roughly doubled year over year; and about <strong>75%</strong> of local searches convert into leads. A menu that requires pinch-zooming a PDF fails at the moment the highest-intent customer is deciding.</p>
+<p>Voice and AI assistants read text, not pictures. <strong>51%</strong> of people use voice search to find restaurants. AI assistants (ChatGPT, Gemini, Perplexity, Google AI Overviews) answer restaurant questions by pulling structured, machine-readable content and schema from websites. An image-only menu gives them nothing to cite; a structured menu with dish names, prices, and dietary tags is what wins the recommendation.</p>
+
+<h2>First-party menu economics</h2>
+<p>Third-party delivery platforms charge <strong>15% to 30%</strong> commission, with real effective costs of <strong>30% to 40%</strong> once promotional fees are included. That is enough to erase the entire profit on an order for a restaurant running a 10% to 15% margin. A diner who finds and decides via the restaurant's own accessible menu, then calls, reserves, or visits, is a customer acquired without surrendering a third of the check, and without ceding pricing, descriptions, and photography to a stripped-down third-party catalog.</p>
+
+<h2>The dietary-restriction audience</h2>
+<p>Menu informativeness has a large, growing constituency: more than <strong>4 in 10</strong> Americans follow some nutrition rule, roughly <strong>5%</strong> are vegetarian or vegan, and about <strong>2 million</strong> have celiac disease. For these diners, a menu without ingredient, allergen, or category detail disqualifies the restaurant before it is ever considered. Allergen claims must be accurate; unverified labeling is a liability, not a feature.</p>
+
+<h2>What the format should be</h2>
+<ul>
+  <li>A mobile-friendly HTML page with real, selectable text</li>
+  <li>Semantic headings for each section, so screen readers can navigate it</li>
+  <li>Item names, descriptions, and prices, plus accurate dietary indicators</li>
+  <li>Structured data (Restaurant, Menu, LocalBusiness) so search engines and AI can retrieve it</li>
+  <li>An optional printable PDF as a supplement, never the primary</li>
+</ul>
+<p>An image-only menu or poorly built PDF is harder to read on a phone, search for a dish, translate, enlarge, keep price-current, and parse for AI. Each of those failures loses a customer.</p>
+
+<h2>Honest limits of the evidence</h2>
+<p>No credible study isolates a "+X% sales" effect from adding a menu, so any pitch promising a guaranteed revenue increase is not defensible. Survey figures describe self-selected populations reporting whether something ever happened, and local ranking still depends on distance, reviews, and competition. The defensible claim is a low-single-digit lift in conversion among website visitors.</p>
+
+<table class="data-table">
+  <caption>Illustrative model: 1,000 menu-page visits per month, $55 average party spend. Not published averages.</caption>
+  <thead>
+    <tr><th scope="col">Conversion lift</th><th scope="col" class="num">Extra parties/mo</th><th scope="col" class="num">Extra revenue/mo</th><th scope="col" class="num">Extra revenue/yr</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>0.5%</td><td class="num">5</td><td class="num">$275</td><td class="num">$3,300</td></tr>
+    <tr><td>2%</td><td class="num">20</td><td class="num">$1,100</td><td class="num">$13,200</td></tr>
+    <tr><td>5%</td><td class="num">50</td><td class="num">$2,750</td><td class="num">$33,000</td></tr>
+  </tbody>
+</table>
+<p>To prove impact for a specific restaurant, measure a before/after window of menu-page traffic, Google menu clicks, calls, direction requests, reservations, and first-time customers. That produces a credible case study industry-wide surveys cannot.</p>
+
+<div class="callout"><p>An online menu rarely closes the sale, but it decides whether the restaurant is even in the running. An accessible, structured menu lets every diner, blind, low-vision, mobile, dietary-restricted, or AI-assisted, understand the menu instead of eliminating the restaurant because its information was missing, unreadable, or unsearchable.</p></div>
+
+<h2>Sources</h2>
+<ul class="source-list">
+  <li>TouchBistro, <a href="https://www.touchbistro.com/press-releases/touchbistros-2024-diner-trends-report-shows-us-diners-are-looking-for-savings-convenience-and-connection/" rel="nofollow noopener" target="_blank">2024 Diner Trends Report</a></li>
+  <li>Toast, <a href="https://pos.toasttab.com/blog/on-the-line/restaurant-reviews-and-ratings-data" rel="nofollow noopener" target="_blank">How Restaurant Review Websites Affect Consumer Demand</a></li>
+  <li>MGH / PR Newswire, <a href="https://www.prnewswire.com/news-releases/survey-nearly-70-of-us-diners-say-a-restaurants-website-has-discouraged-them-from-visiting-300909229.html" rel="nofollow noopener" target="_blank">Nearly 70% of Diners Discouraged by a Restaurant's Website</a> (2019)</li>
+  <li>International Journal of Hospitality Management, <a href="https://www.sciencedirect.com/science/article/pii/S0278431920303297" rel="nofollow noopener" target="_blank">Online restaurant menus and purchase intentions</a></li>
+  <li>American Foundation for the Blind, <a href="https://afb.org/research-and-initiatives/statistics/adults-vision-loss-nhis" rel="nofollow noopener" target="_blank">Adults with Vision Loss (NHIS)</a></li>
+  <li>WebAIM, <a href="https://webaim.org/projects/screenreadersurvey10/" rel="nofollow noopener" target="_blank">Screen Reader User Survey #10</a></li>
+  <li>Accessibility.Works, <a href="https://www.accessibility.works/blog/ada-lawsuit-trends-statistics-2024-summary/" rel="nofollow noopener" target="_blank">ADA Web Accessibility Lawsuit Trends: 2024</a></li>
+  <li>Restroworks, <a href="https://www.restroworks.com/blog/google-restaurant-search-statistics/" rel="nofollow noopener" target="_blank">Google Restaurant Search Statistics</a></li>
+  <li>RichMenu, <a href="https://richmenu.io/ai-restaurant-search/" rel="nofollow noopener" target="_blank">AI Restaurant Search</a></li>
+  <li>Rezku, <a href="https://rezku.com/blog/third-party-delivery-fees-in-2026-what-doordash-uber-eats-grubhub-really-cost-restaurants/" rel="nofollow noopener" target="_blank">Third-Party Delivery Fees</a></li>
+  <li>Statista, <a href="https://www.statista.com/chart/24791/share-of-americans-who-who-follow-nutritional-rules/" rel="nofollow noopener" target="_blank">Share of Americans Who Follow Nutritional Rules</a></li>
+</ul>
+<p class="disclaimer">Independent statistics are cited to their publishing sources. Financial models are illustrative, not published averages. Figures reflect 2024 to 2026 reporting. This article summarizes third-party research and does not constitute legal advice.</p>
+
+</article>
+<aside class="side-card">
+  <h2>Key findings</h2>
+  <ul>
+    <li><span class="stat">85%</span> of diners read a menu online before choosing a new restaurant.</li>
+    <li><span class="stat">30%</span> have been put off a restaurant by a menu that was hard to read.</li>
+    <li><span class="stat">~8.5M</span> Americans are blind or have serious difficulty seeing.</li>
+    <li><span class="stat">4,000+</span> web-accessibility lawsuits were filed in 2024, with restaurants targeted often.</li>
+    <li>The honest claim is a low-single-digit lift in conversion, not a guaranteed revenue number.</li>
+  </ul>
+  <div class="page-actions"><a class="btn btn-primary" href="https://app.meetthemenu.com/">Open the app</a><a class="btn btn-secondary" href="partners.html">Take part</a></div>
+</aside>
+</div></div></main><footer><div class="wrap"><div class="foot-row"><a class="brand" href="index.html"><span class="mark" aria-hidden="true"><i></i></span><span><b>Meet My</b><span class="v"> Menu</span></span></a><div class="foot-links"><a href="about.html">About</a><a href="accessibility.html">Accessibility</a><a href="partners.html">Partners</a><a href="blog.html">Blog</a><a href="index.html#signup">Sign up</a><a href="https://app.meetthemenu.com/">Open the app</a></div></div><p class="foot-note">A voice-first menu reader for blind and low-vision diners.</p></div></footer>
+<script>var h=document.getElementById('head');function s(){h.dataset.stuck=window.scrollY>12?'1':'0'}s();addEventListener('scroll',s,{passive:true});</script></body></html>
