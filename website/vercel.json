@@ -1,4 +1,11 @@
 {
+  "redirects": [
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
   "functions": {
     "api/activity.js": { "maxDuration": 10 },
     "api/waitlist.js": { "maxDuration": 10 }
