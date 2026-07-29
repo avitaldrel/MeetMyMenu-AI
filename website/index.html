@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Meet My Menu · Restaurant menus, read aloud</title>
-<meta name="description" content="Meet My Menu is a voice-first app that reads restaurant menus aloud and answers questions about dishes by voice." />
+<title>Meet My Menu | Restaurant menus read aloud</title>
+<meta name="description" content="Meet My Menu helps blind and low-vision diners scan paper menus or find menus online, hear them read aloud, and ask questions by voice." />
 <link rel="icon" type="image/png" href="/meetmymenu-logo.png" />
 <link rel="apple-touch-icon" href="/meetmymenu-logo.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -182,35 +182,41 @@ h2.display { font-size: clamp(32px, 4.8vw, 60px); }
 .nav-links a:not(.btn) { font-size: 14.5px; color: var(--text-secondary); text-decoration: none; padding: 9px 13px; border-radius: 9px; transition: color 140ms ease, background 140ms ease; }
 .nav-links a:not(.btn):hover { color: var(--text-primary); background: var(--surface); }
 .nav .btn { --h: 44px; font-size: 14.5px; padding: 0 18px; }
-@media (max-width: 860px) { .nav-links a:not(.btn) { display: none; } }
+.nav-toggle { display: none; min-height: 44px; padding: 0 15px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--text-primary); font: 700 14px var(--font-body); cursor: pointer; }
+.nav-toggle:hover { border-color: var(--text-muted); }
+@media (max-width: 860px) {
+  .nav { flex-wrap: wrap; gap: 10px 12px; padding-block: 10px; }
+  .brand { font-size: 21px; }
+  .nav-toggle { display: inline-flex; align-items: center; justify-content: center; margin-left: auto; }
+  .nav-links { display: none; order: 3; width: 100%; margin-left: 0; padding: 8px; border: 1px solid var(--border); border-radius: 14px; background: var(--bg-soft); }
+  .nav-links[data-open="true"] { display: grid; grid-template-columns: 1fr; gap: 2px; }
+  .nav-links a:not(.btn) { display: flex; align-items: center; min-height: 44px; padding: 9px 12px; }
+  .nav .btn { width: 100%; margin-top: 6px; }
+}
 
 /* ── Hero ── */
-.hero { position: relative; padding-top: clamp(40px, 6vw, 80px); padding-bottom: clamp(36px, 5vw, 64px); overflow: hidden; }
-.hero .wrap { position: relative; z-index: 1; }
-.hero-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(30px, 6vw, 76px); align-items: center; }
-.hero-copy { position: relative; }
-.hero h1 { margin: 22px 0 0; }
-.hero .lede { margin-top: 26px; }
-.hero-cta { margin-top: 36px; display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
-.hero-note { margin-top: 22px; font-family: var(--font-mono); font-size: 12.5px; color: var(--text-muted); display: flex; align-items: center; gap: 10px; margin: 22px 0 0; }
-.hero-note strong { color: var(--text-secondary); font-weight: 500; }
-
-/* hero animated bars */
-.hbars { display: inline-flex; align-items: center; gap: 3px; height: 20px; flex-shrink: 0; }
-.hbars b { display: block; width: 3px; border-radius: 3px; background: var(--accent); animation: hbar 1.3s ease-in-out infinite alternate; }
-.hbars b:nth-child(1){height:30%;animation-delay:0.00s}
-.hbars b:nth-child(2){height:78%;animation-delay:0.11s}
-.hbars b:nth-child(3){height:52%;animation-delay:0.22s}
-.hbars b:nth-child(4){height:100%;animation-delay:0.33s}
-.hbars b:nth-child(5){height:62%;animation-delay:0.44s}
-.hbars b:nth-child(6){height:88%;animation-delay:0.55s}
-.hbars b:nth-child(7){height:40%;animation-delay:0.66s}
-@keyframes hbar { from { opacity: 0.25; transform: scaleY(0.3); } to { opacity: 0.95; transform: scaleY(1); } }
-@media (prefers-reduced-motion: reduce) { .hbars b { animation: none; opacity: 0.6; } }
-
-.hero-phone-wrap { position: relative; display: grid; place-items: center; }
-.hero-phone-wrap .glow-ring { position: absolute; width: 120%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, var(--accent-glow), transparent 62%); filter: blur(8px); }
-@media (max-width: 880px) { .hero-grid { grid-template-columns: 1fr; } .hero-phone-wrap { margin-top: 40px; } }
+.hero { position:relative; min-height:100svh; display:grid; isolation:isolate; overflow:hidden; }
+.hero-media,.hero-shade { position:absolute; inset:0; }
+.hero-media { z-index:-2; margin:0; }
+.hero-media img { display:block; width:100%; height:100%; object-fit:cover; object-position:65% 50%; filter:saturate(.8) contrast(1.04); }
+.hero-shade { z-index:-1; background:linear-gradient(90deg,rgba(13,13,15,.98) 0%,rgba(13,13,15,.9) 43%,rgba(13,13,15,.43) 76%,rgba(13,13,15,.56) 100%),linear-gradient(0deg,rgba(13,13,15,.94) 0%,transparent 34%),linear-gradient(180deg,rgba(13,13,15,.68) 0%,transparent 28%); }
+.hero .wrap { position:relative; z-index:1; width:100%; }
+.hero-grid { min-height:100svh; padding:clamp(92px,9vw,112px) 0 clamp(48px,6vw,72px); display:grid; grid-template-columns:minmax(0,1.02fr) minmax(340px,.78fr); gap:clamp(40px,7vw,104px); align-items:center; }
+.hero-copy { position:relative; max-width:660px; }
+.hero h1 { margin:0; font-size:clamp(48px,5.6vw,76px); }
+.hero .lede { max-width:48ch; margin-top:4px; }
+.hero-cta { margin-top:18px; display:flex; flex-wrap:wrap; gap:13px; align-items:center; }
+.hero .btn-lg { --h:56px; font-size:17px; }
+.hero-purpose { width:min(100%,440px); justify-self:end; padding:clamp(24px,3vw,32px); border:1px solid rgba(255,255,255,.3); border-radius:18px; background:rgba(18,18,22,.76); box-shadow:inset 0 1px rgba(255,255,255,.12),0 30px 80px -44px rgba(0,0,0,.94); backdrop-filter:blur(18px) saturate(125%); }
+.hero-purpose-label { margin:0; color:var(--accent); font:500 10px/1.4 var(--font-mono); letter-spacing:.14em; text-transform:uppercase; }
+.hero-purpose-title { margin:13px 0 24px; color:var(--text-primary); font:500 clamp(28px,3vw,38px)/1.12 var(--font-display); letter-spacing:-.02em; }
+.hero-purpose-list { display:grid; gap:16px; margin:0; padding:0; list-style:none; }
+.hero-purpose-list li { padding-top:16px; border-top:1px solid rgba(255,255,255,.16); }
+.hero-purpose-list strong { display:block; color:var(--text-primary); font-size:16px; }
+.hero-purpose-list span { display:block; margin-top:5px; color:var(--text-secondary); font-size:14px; line-height:1.45; }
+@media (max-width:900px) { .hero{min-height:auto}.hero-grid{min-height:auto;padding:130px 0 72px;grid-template-columns:1fr;gap:42px}.hero-purpose{justify-self:start}.hero-shade{background:linear-gradient(90deg,rgba(13,13,15,.98) 0%,rgba(13,13,15,.83) 64%,rgba(13,13,15,.64) 100%),linear-gradient(0deg,rgba(13,13,15,.96) 0%,transparent 42%)} }
+@media (max-width:620px) { .hero-grid{padding:108px 0 48px;gap:32px}.hero h1{font-size:clamp(48px,14vw,70px)}.hero-media img{object-position:58% 50%}.hero-cta{align-items:stretch;flex-direction:column}.hero-cta .btn{width:100%}.hero-purpose{width:100%} }
+@media (prefers-reduced-transparency:reduce) { .hero-purpose{background:var(--surface);backdrop-filter:none} }
 
 /* ── Phone (shared) ── */
 .phone {
@@ -735,7 +741,21 @@ html[data-a11y-font="readable"] {
 .draft-flag { position:fixed;bottom:14px;left:14px;z-index:60;font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);background:color-mix(in srgb,var(--bg) 78%,transparent);border:1px solid var(--border);padding:6px 11px;border-radius:999px;backdrop-filter:blur(8px);pointer-events:none; }
 
 </style>
-</head>
+
+<link rel="canonical" href="https://meetmymenu.com/" />
+<meta name="robots" content="index,follow,max-image-preview:large" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Meet My Menu" />
+<meta property="og:title" content="Meet My Menu | Restaurant menus read aloud" />
+<meta property="og:description" content="Meet My Menu helps blind and low-vision diners scan paper menus or find menus online, hear them read aloud, and ask questions by voice." />
+<meta property="og:url" content="https://meetmymenu.com/" />
+<meta property="og:image" content="https://meetmymenu.com/assets/images/hands-holding-menu-no-scissors.png" />
+<meta property="og:image:alt" content="Hands holding a printed restaurant menu at a table." />
+<meta name="twitter:card" content="summary_large_image" /><meta name="twitter:title" content="Meet My Menu | Restaurant menus read aloud" />
+<meta name="twitter:description" content="Meet My Menu helps blind and low-vision diners scan paper menus or find menus online, hear them read aloud, and ask questions by voice." />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Meet My Menu","applicationCategory":"AccessibilityApplication","operatingSystem":"Web","url":"https://meetmymenu.com/","description":"Meet My Menu helps blind and low-vision diners scan paper menus or find menus online, hear them read aloud, and ask questions by voice.","image":"https://meetmymenu.com/assets/images/hands-holding-menu-no-scissors.png"}
+</script></head>
 <body>
 
 <button class="a11y-launcher" id="a11y-launcher" type="button" aria-controls="a11y-panel" aria-expanded="false">
@@ -771,12 +791,13 @@ html[data-a11y-font="readable"] {
       <span class="mark" aria-hidden="true"><i></i></span>
       <span><b>Meet My</b><span class="v"> Menu</span></span>
     </a>
-    <div class="nav-links">
+    <button class="nav-toggle" type="button" aria-controls="site-menu" aria-expanded="false" aria-label="Open navigation"><span aria-hidden="true">Menu</span></button>
+    <div class="nav-links" id="site-menu" data-open="false">
       <a href="#demo-section">How it works</a>
       <a href="about.html">About</a>
       <a href="partners.html">Partners</a>
       <a href="blog.html">Blog</a>
-      <a class="btn btn-primary" href="https://app.meetthemenu.com/">Open the app</a>
+      <a class="btn btn-primary" href="https://app.meetmymenu.com/">Open the app</a>
     </div>
   </nav>
 </header>
@@ -784,49 +805,34 @@ html[data-a11y-font="readable"] {
 <main id="top">
 
   <!-- ═══════════════════════ HERO ═══════════════════════ -->
-  <section class="hero section-pad" aria-labelledby="hero-h">
+  <section class="hero" aria-labelledby="hero-h">
+    <picture class="hero-media">
+      <img src="assets/images/hands-holding-menu-no-scissors.png" alt="Hands holding a printed menu at a restaurant table." width="1023" height="1537" fetchpriority="high" />
+    </picture>
+    <div class="hero-shade" aria-hidden="true"></div>
     <div class="wrap">
       <div class="hero-grid">
-
         <div class="hero-copy">
-          <p class="eyebrow reveal">Voice-first menu reader</p>
-          <h1 class="display reveal" data-d="1" id="hero-h">Restaurant menus,<br/><em>read aloud.</em></h1>
-          <p class="lede reveal" data-d="2">Scan a paper menu or find one online. Meet My Menu reads the dishes aloud and answers your questions by voice.</p>
+          <p class="eyebrow reveal">For blind and low-vision diners</p>
+          <h1 class="display reveal" data-d="1" id="hero-h">Restaurant menus, <em>read aloud.</em></h1>
+          <p class="lede reveal" data-d="2">Scan a paper menu or find one online. Meet My Menu reads it aloud and answers questions by voice.</p>
           <div class="hero-cta reveal" data-d="3">
-            <a class="btn btn-primary btn-lg" href="https://app.meetthemenu.com/">Open Meet My Menu <span class="arrow">→</span></a>
-            <a class="btn btn-ghost btn-lg" href="#demo-section">See how it works <span class="arrow">→</span></a>
-          </div>
-          <p class="hero-note reveal" data-d="3">
-            <span class="hbars" aria-hidden="true"><b></b><b></b><b></b><b></b><b></b><b></b><b></b></span>
-            <span><strong>Built for blind and low-vision diners</strong></span>
-          </p>
-        </div>
-
-        <div class="hero-phone-wrap reveal" data-d="2">
-          <div class="glow-ring" aria-hidden="true"></div>
-          <div class="phone" role="img" aria-label="Meet My Menu chat: allergen check on carbonara">
-            <div class="phone-notch" aria-hidden="true"></div>
-            <div class="phone-screen">
-              <div class="status-bar"><span>7:24</span><span class="dots" aria-hidden="true"><i class="sig"></i><i class="wifi"></i><i class="batt"></i></span></div>
-              <div class="app">
-                <p class="app-heading">Trattoria Nove</p>
-                <div class="phase"><span class="pdot"></span>Meet My Menu is speaking…</div>
-                <div class="transcript">
-                  <div class="turn a"><div class="who">Meet My Menu</div><div class="txt">Four sections: antipasti, pasta, secondi, dolci. Want me to start with pastas?</div></div>
-                  <div class="turn u"><div class="who">You</div><div class="txt">Carbonara. Safe with a shellfish allergy?</div></div>
-                  <div class="turn a flag"><div class="who">Meet My Menu</div><div class="txt"><b>The menu does not list shellfish.</b> Please confirm with restaurant staff.</div></div>
-                </div>
-                <div class="speak-bar" aria-hidden="true"><i style="width:58%"></i></div>
-                <div class="app-toggle">⦿ Conversational: ON</div>
-              </div>
-            </div>
+            <a class="btn btn-primary btn-lg" href="https://app.meetmymenu.com/">Open Meet My Menu <span class="arrow" aria-hidden="true">&rarr;</span></a>
+            <a class="btn btn-secondary btn-lg" href="#demo-section">See the demo</a>
           </div>
         </div>
-
+        <aside class="hero-purpose reveal" data-d="2" aria-labelledby="hero-purpose-title">
+  <p class="hero-purpose-label">What Meet My Menu does</p>
+  <h2 class="hero-purpose-title" id="hero-purpose-title">Understand the menu before you order.</h2>
+  <ul class="hero-purpose-list">
+    <li><strong>Scan or find a menu</strong><span>Use a paper menu or find a restaurant online.</span></li>
+    <li><strong>Hear it read aloud</strong><span>Listen to dishes, prices, and details at your pace.</span></li>
+    <li><strong>Ask follow-up questions</strong><span>Ask about ingredients, allergens, and preferences by voice.</span></li>
+  </ul>
+</aside>
       </div>
     </div>
   </section>
-
   <hr class="rule" />
 
   <!-- ═══════════════════════ WHY ═══════════════════════ -->
@@ -835,8 +841,8 @@ html[data-a11y-font="readable"] {
     <div class="wrap">
       <div class="interactive-demo-head">
         <p class="eyebrow reveal">Try the conversation</p>
-        <h2 class="display reveal" data-d="1" id="interactive-demo-h">Ask the menu a <em>real question.</em></h2>
-        <p class="lede reveal" data-d="2">Choose a question below. Meet My Menu answers from a sample restaurant menu, keeps the conversation together, and can read the latest answer aloud.</p>
+        <h2 class="display reveal" data-d="1" id="interactive-demo-h">Try it with a <em>sample menu.</em></h2>
+        <p class="lede reveal" data-d="2">Choose a question to see how Meet My Menu answers from a menu and reads the reply aloud.</p>
       </div>
 
       <div class="live-demo reveal" data-d="3">
@@ -1101,7 +1107,7 @@ html[data-a11y-font="readable"] {
         </form>
         <p class="cta-msg" id="cta-msg" role="status" aria-live="polite"></p>
         <p class="cta-mini" id="cta-privacy">For pilot updates and testing opportunities only.</p>
-        <a class="btn btn-ghost" href="https://app.meetthemenu.com/">Or open the app now <span class="arrow">→</span></a>
+        <a class="btn btn-ghost" href="https://app.meetmymenu.com/">Or open the app now <span class="arrow">→</span></a>
       </div>
     </div>
   </section>
@@ -1123,7 +1129,7 @@ html[data-a11y-font="readable"] {
         <a href="blog.html">Blog</a>
         <a href="#faq">FAQ</a>
         <a href="#signup">Sign up</a>
-        <a href="https://app.meetthemenu.com/">Open the app</a>
+        <a href="https://app.meetmymenu.com/">Open the app</a>
       </div>
     </div>
     <p class="foot-note">A voice-first menu reader for blind and low-vision diners.</p>
@@ -1945,6 +1951,5 @@ html[data-a11y-font="readable"] {
   else init();
 })();
 
-</script>
-</body>
+</script><script src="site.js"></script></body>
 </html>

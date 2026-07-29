@@ -13,13 +13,14 @@
 .page-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(260px,.55fr);gap:clamp(36px,7vw,88px);align-items:start}
 .page-copy{max-width:760px}.page-copy h2{font:500 clamp(28px,4vw,42px)/1.14 var(--font-display);letter-spacing:-.02em;margin:56px 0 18px}.page-copy h2:first-child{margin-top:0}.page-copy h3{font-size:20px;margin:32px 0 8px;color:var(--text-primary)}.page-copy p,.page-copy li{color:var(--text-secondary)}.page-copy ul{padding-left:22px}.page-copy li{margin:7px 0}.page-copy strong{color:var(--text-primary)}
 .side-card,.callout{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:clamp(22px,3vw,32px)}
-.side-card{position:sticky;top:96px}.side-card h2{font:500 24px/1.15 var(--font-display);margin:0 0 14px}.side-card ul{list-style:none;padding:0;margin:0}.side-card li{color:var(--text-secondary);font-size:15px;padding:11px 0;border-bottom:1px solid var(--border)}.side-card li:last-child{border-bottom:none}.side-card .stat{color:var(--accent);font-weight:700}
+.side-card{position:sticky;top:96px;max-height:calc(100vh - 120px);overflow-y:auto}.side-card h2{font:500 24px/1.15 var(--font-display);margin:0 0 14px}.side-card ul{list-style:none;padding:0;margin:0}.side-card li{color:var(--text-secondary);font-size:15px;padding:11px 0;border-bottom:1px solid var(--border)}.side-card li:last-child{border-bottom:none}.side-card .stat{color:var(--accent);font-weight:700}
 .callout{border-color:var(--accent);margin:38px 0}.callout p{color:var(--text-primary);margin:0;font:500 20px/1.4 var(--font-display)}
 .data-table{width:100%;border-collapse:collapse;margin:22px 0;font-size:15px}
 .data-table caption{text-align:left;color:var(--text-muted);font-size:13px;margin-bottom:10px}
 .data-table th,.data-table td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--border)}
 .data-table th{color:var(--text-primary);font-weight:700}
 .data-table td.num,.data-table th.num{text-align:right;font-variant-numeric:tabular-nums}
+.evidence-chart{margin:30px 0;padding:clamp(20px,3vw,28px);background:var(--surface);border:1px solid var(--border);border-radius:18px}.evidence-chart figcaption{color:var(--text-primary);font:500 20px/1.3 var(--font-display);margin-bottom:20px}.chart-row{display:grid;grid-template-columns:minmax(0,1fr) 54px;gap:12px;align-items:center;margin:14px 0}.chart-label{font-size:15px;color:var(--text-secondary)}.chart-track{height:12px;margin-top:7px;overflow:hidden;border-radius:999px;background:var(--surface-high)}.chart-fill{height:100%;border-radius:inherit;background:var(--accent)}.chart-value{color:var(--accent);font-weight:800;text-align:right}.chart-note{margin:18px 0 0;color:var(--text-muted);font-size:13px}
 .page-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
 .source-list{margin:0;padding:0;list-style:none}.source-list li{font-size:14px;color:var(--text-secondary);padding:9px 0;border-bottom:1px solid var(--border-soft)}.source-list li:last-child{border-bottom:none}
 .disclaimer{color:var(--text-muted);font-size:14px;font-style:italic;margin-top:28px}
@@ -54,17 +55,25 @@
 <section class="inner-hero">
   <p class="article-meta">Research &middot; July 2026</p>
   <h1 class="display">The business case for an <em>accessible online menu.</em></h1>
-  <p class="lede">Most people decide whether to try an unfamiliar restaurant before they walk in, call, or reserve, and the piece of information they check most is the menu. A clear, machine-readable menu is not a sale by itself, but it often decides whether the restaurant gets the chance to make the sale at all.</p>
+  <p class="lede">An accessible, structured online menu helps a restaurant get considered before a diner ever calls, visits, or reserves.</p>
 </section>
 <div class="page-grid">
 <article class="page-copy">
 
 <h2>Menus decide who gets considered</h2>
-<p>Before choosing a new restaurant, U.S. diners research online first, and the menu leads. <strong>85%</strong> look at the menu online, <strong>80%</strong> at the website, and <strong>64%</strong> run a Google search (TouchBistro 2024). In a separate survey, <strong>32%</strong> always check a restaurant's website and <strong>51%</strong> sometimes do, only 4% never (Toast). An earlier study found <strong>69%</strong> said the website helped them decide whether to dine there (MGH 2019).</p>
-<p>Diners use the online menu to choose between competing restaurants, well before they decide to visit.</p>
+<p>Picture the ordinary decision: someone hears about a restaurant, opens its menu on their phone, and decides whether it is worth a call, reservation, or walk over. That decision happens before the host stand. If the menu is missing, unreadable, or difficult to search, the restaurant may never make the shortlist.</p>
+<p>The menu is the first thing many diners look for. In TouchBistro's 2024 survey, <strong>85%</strong> said they read it online before choosing a new restaurant. The website and Google search followed at <strong>80%</strong> and <strong>64%</strong>.</p>
+
+<figure class="evidence-chart" aria-labelledby="menu-research-chart-title">
+  <figcaption id="menu-research-chart-title">What diners check before choosing a new restaurant</figcaption>
+  <div class="chart-row"><div><span class="chart-label">Menu online</span><div class="chart-track" aria-hidden="true"><div class="chart-fill" style="width:85%"></div></div></div><span class="chart-value">85%</span></div>
+  <div class="chart-row"><div><span class="chart-label">Restaurant website</span><div class="chart-track" aria-hidden="true"><div class="chart-fill" style="width:80%"></div></div></div><span class="chart-value">80%</span></div>
+  <div class="chart-row"><div><span class="chart-label">Google search</span><div class="chart-track" aria-hidden="true"><div class="chart-fill" style="width:64%"></div></div></div><span class="chart-value">64%</span></div>
+  <p class="chart-note">TouchBistro 2024 Diner Trends Report. Percentages are shown in the text as well as the graphic.</p>
+</figure>
 
 <h3>An unreadable menu loses customers silently</h3>
-<p>Among consumers likely to check restaurant websites (MGH 2019): <strong>68%</strong> had been discouraged from visiting because of a website; <strong>30%</strong> because the menu was hard to read; <strong>36%</strong> had abandoned a takeout order for the same reason. This loss is invisible. The customer doesn't complain. They pick a competitor.</p>
+<p>That loss is usually silent. Among consumers likely to check restaurant websites, <strong>68%</strong> had been discouraged from visiting by a website, <strong>30%</strong> by a hard-to-read menu, and <strong>36%</strong> had abandoned a takeout order for the same reason (MGH 2019). They do not file a complaint. They choose somewhere else.</p>
 
 <h3>Menu quality, not mere existence, moves intent</h3>
 <p>A peer-reviewed study (<em>International Journal of Hospitality Management</em>) modeled the mechanism: menu visual appeal drives desire for food, informativeness drives perceived convenience, and both drive purchase intention. It measured intention, not verified revenue, but the mechanism is clear: descriptions, categories, and dietary detail persuade more than names and prices alone.</p>
@@ -134,12 +143,10 @@
   <h2>Key findings</h2>
   <ul>
     <li><span class="stat">85%</span> of diners read a menu online before choosing a new restaurant.</li>
-    <li><span class="stat">30%</span> have been put off a restaurant by a menu that was hard to read.</li>
-    <li><span class="stat">~8.5M</span> Americans are blind or have serious difficulty seeing.</li>
-    <li><span class="stat">4,000+</span> web-accessibility lawsuits were filed in 2024, with restaurants targeted often.</li>
-    <li>The honest claim is a low-single-digit lift in conversion, not a guaranteed revenue number.</li>
+    <li><span class="stat">30%</span> have been discouraged by a menu that was hard to read.</li>
+    <li>Real text makes a menu usable for screen readers, search, and AI assistants.</li>
   </ul>
-  <div class="page-actions"><a class="btn btn-primary" href="https://app.meetmymenu.com/">Open the app</a><a class="btn btn-secondary" href="partners.html">Take part</a></div>
+  <div class="page-actions"><a class="btn btn-primary" href="partners.html">Take part</a></div>
 </aside>
 </div></div></main><footer><div class="wrap"><div class="foot-row"><a class="brand" href="index.html"><span class="mark" aria-hidden="true"><i></i></span><span><b>Meet My</b><span class="v"> Menu</span></span></a><div class="foot-links"><a href="about.html">About</a><a href="accessibility.html">Accessibility</a><a href="partners.html">Partners</a><a href="blog.html">Blog</a><a href="index.html#signup">Sign up</a><a href="https://app.meetmymenu.com/">Open the app</a></div></div><p class="foot-note">A voice-first menu reader for blind and low-vision diners.</p></div></footer>
 <script>var h=document.getElementById('head');function s(){h.dataset.stuck=window.scrollY>12?'1':'0'}s();addEventListener('scroll',s,{passive:true});</script><script src="site.js"></script></body></html>
