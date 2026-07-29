@@ -2,6 +2,19 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "menu.avitaldrel.com"
+        }
+      ],
+      "destination": "https://app.meetmymenu.com/:path*",
+      "permanent": true
+    }
+  ],
   "functions": {
     "api/chat.ts": { "maxDuration": 60 },
     "api/scrape.ts": { "maxDuration": 30 },
