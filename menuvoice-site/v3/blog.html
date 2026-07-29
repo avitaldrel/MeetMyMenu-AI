@@ -18,22 +18,35 @@
 .page-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
 .nav-links a[aria-current="page"]{color:var(--accent)}
 @media(max-width:820px){.page-grid{grid-template-columns:1fr}.side-card{position:static}.feature-cards{grid-template-columns:1fr}}
-</style></head>
+</style>
+<link rel="canonical" href="https://meetmymenu.com/blog.html" />
+<meta name="robots" content="index,follow,max-image-preview:large" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="Meet My Menu" />
+<meta property="og:title" content="Blog | Meet My Menu" />
+<meta property="og:description" content="Notes from building Meet My Menu, a voice-first menu reader for blind and low-vision diners." />
+<meta property="og:url" content="https://meetmymenu.com/blog.html" />
+<meta name="twitter:card" content="summary" /><meta name="twitter:title" content="Blog | Meet My Menu" />
+<meta name="twitter:description" content="Notes from building Meet My Menu, a voice-first menu reader for blind and low-vision diners." />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"CollectionPage","name":"Meet My Menu blog","url":"https://meetmymenu.com/blog.html","description":"Notes from building Meet My Menu, a voice-first menu reader for blind and low-vision diners."}
+</script></head>
 <body><a class="skip-link" href="#main-content">Skip to main content</a><header class="site-head" id="head">
   <nav class="nav" aria-label="Main navigation">
     <a class="brand" href="index.html" aria-label="Meet My Menu home"><span class="mark" aria-hidden="true"><i></i></span><span><b>Meet My</b><span class="v"> Menu</span></span></a>
-    <div class="nav-links">
+    <button class="nav-toggle" type="button" aria-controls="site-menu" aria-expanded="false" aria-label="Open navigation"><span aria-hidden="true">Menu</span></button>
+    <div class="nav-links" id="site-menu" data-open="false">
       <a href="index.html">Home</a>
       <a href="about.html">About</a>
       <a href="partners.html">Partners</a>
       <a href="blog.html" aria-current="page">Blog</a>
-      <a class="btn btn-primary" href="https://app.meetthemenu.com/">Open the app</a>
+      <a class="btn btn-primary" href="https://app.meetmymenu.com/">Open the app</a>
     </div>
   </nav>
 </header><main id="main-content" class="inner-main"><div class="wrap"><section class="inner-hero"><p class="eyebrow">Build notes</p><h1 class="display">Notes from building <em>Meet My Menu.</em></h1><p class="lede">Short, practical writing about accessible product decisions, honest menu data, and testing voice-first experiences.</p></section><div class="article-list">
-<article class="article-card" id="menu-research"><p class="article-meta">Research &middot; July 2026</p><h2><a href="menu-research.html">The business case for an accessible online menu</a></h2><p>Before someone calls, reserves, or walks over, they usually look at the menu. This research follows that small moment of choice: what happens when the menu is clear, what happens when it is not, and why accessible structure matters for diners and search alike.</p><div class="page-actions"><a class="btn btn-secondary" href="menu-research.html">Read the research</a></div></article>
+<article class="article-card" id="menu-research"><p class="article-meta">Research &middot; July 2026</p><h2><a href="menu-research.html">The business case for an accessible online menu</a></h2><p>Most people decide whether to try an unfamiliar restaurant before they walk in, call, or reserve, and the piece of information they check most is the menu. This report gathers the evidence: 85% of diners read the menu online before choosing, an unreadable menu quietly loses customers, and an accessible, structured menu is what search engines and AI assistants can actually read.</p><p>It also covers the parts most pitches skip: the accessibility market and its legal exposure, the shift to voice and "near me" search, and the honest limits of the data.</p><div class="page-actions"><a class="btn btn-secondary" href="menu-research.html">Read the research</a></div></article>
 <article class="article-card" id="partial-results"><p class="article-meta">Product trust</p><h2>Teaching a menu reader to say “I only found part of this”</h2><p>A menu answer can sound complete even when its source is not. A restaurant page might show only lunch, a photo might cut off the bottom, or search results might contain an old menu.</p><p>For Meet My Menu, saying what was found is only half the job. The product also needs to say what may be missing. That gives the diner a chance to search again, scan another page, or ask restaurant staff.</p><p>Uncertainty is not a failure state to hide. Spoken clearly, it is useful information.</p></article>
 <article class="article-card" id="audit-finish-line"><p class="article-meta">Accessibility testing</p><h2>Why a green accessibility audit is not the finish line</h2><p>Automated tools catch real problems: missing names, poor structure, and common contrast or keyboard issues. They cannot tell us whether spoken scanning guidance arrives at the right moment or whether a long menu is understandable through a screen reader.</p><p>A voice-first flow has to be tried as a voice-first flow. That means testing with the screen off, listening to the order of information, and checking whether recovery from a mistake is clear.</p><p>The audit is a gate. The lived interaction is the test.</p></article>
 <article class="article-card" id="real-world-test"><p class="article-meta">Product practice</p><h2>The one-real-world-test standard</h2><p>A feature can work perfectly with a clean sample menu and fail in a dim restaurant with a glossy, folded page. One real-world test often reveals more than another round of polishing the ideal case.</p><p>For a menu reader, that test should include a real menu, an actual phone, and the accessibility tools a diner uses. The goal is not to prove the feature works. It is to find the point where it stops helping.</p><p>That standard keeps product decisions tied to the experience the app is supposed to improve.</p></article>
-</div></div></main><footer><div class="wrap"><div class="foot-row"><a class="brand" href="index.html"><span class="mark" aria-hidden="true"><i></i></span><span><b>Meet My</b><span class="v"> Menu</span></span></a><div class="foot-links"><a href="about.html">About</a><a href="accessibility.html">Accessibility</a><a href="partners.html">Partners</a><a href="blog.html">Blog</a><a href="index.html#signup">Sign up</a><a href="https://app.meetthemenu.com/">Open the app</a></div></div><p class="foot-note">A voice-first menu reader for blind and low-vision diners.</p></div></footer>
-<script>var h=document.getElementById('head');function s(){h.dataset.stuck=window.scrollY>12?'1':'0'}s();addEventListener('scroll',s,{passive:true});</script></body></html>
+</div></div></main><footer><div class="wrap"><div class="foot-row"><a class="brand" href="index.html"><span class="mark" aria-hidden="true"><i></i></span><span><b>Meet My</b><span class="v"> Menu</span></span></a><div class="foot-links"><a href="about.html">About</a><a href="accessibility.html">Accessibility</a><a href="partners.html">Partners</a><a href="blog.html">Blog</a><a href="index.html#signup">Sign up</a><a href="https://app.meetmymenu.com/">Open the app</a></div></div><p class="foot-note">A voice-first menu reader for blind and low-vision diners.</p></div></footer>
+<script>var h=document.getElementById('head');function s(){h.dataset.stuck=window.scrollY>12?'1':'0'}s();addEventListener('scroll',s,{passive:true});</script><script src="site.js"></script></body></html>

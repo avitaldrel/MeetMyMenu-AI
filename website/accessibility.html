@@ -1,24 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Accessibility | Meet My Menu</title><meta name="description" content="How accessibility shapes Meet My Menu, from audio guidance to honest allergen information.">
-<meta name="robots" content="index, follow">
-<meta name="theme-color" content="#0d0d0f">
-<link rel="canonical" href="https://meetmymenu.com/accessibility.html">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Meet My Menu">
-<meta property="og:title" content="Accessibility | Meet My Menu">
-<meta property="og:description" content="How accessibility shapes Meet My Menu, from audio guidance to honest allergen information.">
-<meta property="og:url" content="https://meetmymenu.com/accessibility.html">
-<meta property="og:image" content="https://meetmymenu.com/meetmymenu-logo.png">
-<meta property="og:image:width" content="1520">
-<meta property="og:image:height" content="1520">
-<meta property="og:image:alt" content="Meet My Menu logo">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Accessibility | Meet My Menu">
-<meta name="twitter:description" content="How accessibility shapes Meet My Menu, from audio guidance to honest allergen information.">
-<meta name="twitter:image" content="https://meetmymenu.com/meetmymenu-logo.png">
-<meta name="twitter:image:alt" content="Meet My Menu logo">
-<link rel="icon" type="image/png" href="meetmymenu-logo.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"><link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript><link rel="stylesheet" href="styles.css">
+<link rel="icon" type="image/png" href="meetmymenu-logo.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css">
 <style>
 .skip-link{position:fixed;left:16px;top:12px;z-index:1000;padding:10px 14px;border-radius:8px;background:var(--accent);color:var(--accent-text);font-weight:700;transform:translateY(-180%)}.skip-link:focus{transform:translateY(0)}
 .inner-main{padding:clamp(54px,8vw,96px) 0 clamp(80px,10vw,128px)}
@@ -35,11 +18,24 @@
 .page-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
 .nav-links a[aria-current="page"]{color:var(--accent)}
 @media(max-width:820px){.page-grid{grid-template-columns:1fr}.side-card{position:static}.feature-cards{grid-template-columns:1fr}}
-</style></head>
+</style>
+<link rel="canonical" href="https://meetmymenu.com/accessibility.html" />
+<meta name="robots" content="index,follow,max-image-preview:large" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Meet My Menu" />
+<meta property="og:title" content="Accessibility | Meet My Menu" />
+<meta property="og:description" content="How accessibility shapes Meet My Menu, from audio guidance to honest allergen information." />
+<meta property="og:url" content="https://meetmymenu.com/accessibility.html" />
+<meta name="twitter:card" content="summary" /><meta name="twitter:title" content="Accessibility | Meet My Menu" />
+<meta name="twitter:description" content="How accessibility shapes Meet My Menu, from audio guidance to honest allergen information." />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","name":"Accessibility | Meet My Menu","url":"https://meetmymenu.com/accessibility.html","description":"How accessibility shapes Meet My Menu, from audio guidance to honest allergen information."}
+</script></head>
 <body><a class="skip-link" href="#main-content">Skip to main content</a><header class="site-head" id="head">
   <nav class="nav" aria-label="Main navigation">
     <a class="brand" href="index.html" aria-label="Meet My Menu home"><span class="mark" aria-hidden="true"><i></i></span><span><b>Meet My</b><span class="v"> Menu</span></span></a>
-    <div class="nav-links">
+    <button class="nav-toggle" type="button" aria-controls="site-menu" aria-expanded="false" aria-label="Open navigation"><span aria-hidden="true">Menu</span></button>
+    <div class="nav-links" id="site-menu" data-open="false">
       <a href="index.html">Home</a>
       <a href="about.html">About</a>
       <a href="partners.html">Partners</a>
@@ -48,4 +44,4 @@
     </div>
   </nav>
 </header><main id="main-content" class="inner-main"><div class="wrap"><section class="inner-hero"><p class="eyebrow">Accessibility</p><h1 class="display">Accessibility is <em>the product.</em></h1><p class="lede">Meet My Menu is designed around listening, speaking, and screen-reader navigation—not as a visual app with accessibility added later.</p></section><div class="page-grid"><div class="page-copy"><h2>Audio first</h2><p>Important guidance is spoken. The scanning flow tells users how to position a menu, and results are structured to be heard rather than merely seen.</p><h2>Screen-reader readable</h2><p>Controls use meaningful labels, headings follow a useful order, and the experience is built to work with VoiceOver and keyboard navigation.</p><h2>Honest uncertainty</h2><p>When a source is partial, unclear, or unavailable, the product should say so. A confident-sounding answer is not useful when the underlying menu does not support it.</p><div class="callout"><strong>About allergens:</strong> Meet My Menu’s job is to bring possible concerns to the diner’s attention. It surfaces the ingredients and allergen information it finds so the diner knows what to ask about, then confirms it with restaurant staff.</div><h2>Tested beyond checklists</h2><p>Automated accessibility checks are useful, but they are not the finish line. Real device and screen-reader testing is part of evaluating whether a flow actually works.</p></div><aside class="side-card"><h2>Help improve it</h2><p>If you are a blind or low-vision diner, your experience can expose problems an automated audit cannot.</p><div class="page-actions"><a class="btn btn-primary" href="index.html#signup">Join as a tester</a><a class="btn btn-secondary" href="https://app.meetmymenu.com/">Try the app</a></div></aside></div></div></main><footer><div class="wrap"><div class="foot-row"><a class="brand" href="index.html"><span class="mark" aria-hidden="true"><i></i></span><span><b>Meet My</b><span class="v"> Menu</span></span></a><div class="foot-links"><a href="about.html">About</a><a href="accessibility.html">Accessibility</a><a href="partners.html">Partners</a><a href="blog.html">Blog</a><a href="index.html#signup">Sign up</a><a href="https://app.meetmymenu.com/">Open the app</a></div></div><p class="foot-note">A voice-first menu reader for blind and low-vision diners.</p></div></footer>
-<script>var h=document.getElementById('head');function s(){h.dataset.stuck=window.scrollY>12?'1':'0'}s();addEventListener('scroll',s,{passive:true});</script></body></html>
+<script>var h=document.getElementById('head');function s(){h.dataset.stuck=window.scrollY>12?'1':'0'}s();addEventListener('scroll',s,{passive:true});</script><script src="site.js"></script></body></html>

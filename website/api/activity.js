@@ -5,6 +5,18 @@ const redis = Redis.fromEnv();
 const s = (value, max) =>
   typeof value === 'string' && value.trim() ? value.trim().slice(0, max) : null;
 
+function cleanMetadata(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
+  const clean = {};
+  for (const [key, item] of Object.entries(value).slice(0, 16)) {
+    if (typeof key !== 'string' || key.length > 64) continue;
+    if (typeof item === 'string') clean[key] = item.slice(0, 256);
+    else if (typeof item === 'number' && Number.isFinite(item)) clean[key] = item;
+    else if (typeof item === 'boolean') clean[key] = item;
+  }
+  return clean;
+}
+
 function originAllowed(req) {
   const host = req.headers.host;
   const src = req.headers.origin || req.headers.referer || '';
@@ -27,10 +39,7 @@ export default async function handler(req, res) {
   const sessionId = s(req.body?.session_id, 128);
   if (!eventName || !sessionId) return res.status(200).json({ ok: true });
 
-  const metadata =
-    req.body?.metadata && typeof req.body.metadata === 'object' && !Array.isArray(req.body.metadata)
-      ? req.body.metadata
-      : {};
+  const metadata = cleanMetadata(req.body?.metadata);
 
   const record = {
     ts: new Date().toISOString(),

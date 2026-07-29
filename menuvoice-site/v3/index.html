@@ -3,15 +3,29 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Meet My Menu · Restaurant menus, read aloud</title>
-<meta name="description" content="Meet My Menu is a voice-first app that reads restaurant menus aloud and answers questions about dishes by voice." />
+<title>Meet My Menu | Restaurant menus read aloud</title>
+<meta name="description" content="Meet My Menu helps blind and low-vision diners scan paper menus or find menus online, hear them read aloud, and ask questions by voice." />
 <link rel="icon" type="image/png" href="/meetmymenu-logo.png" />
 <link rel="apple-touch-icon" href="/meetmymenu-logo.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css" />
-</head>
+
+<link rel="canonical" href="https://meetmymenu.com/" />
+<meta name="robots" content="index,follow,max-image-preview:large" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Meet My Menu" />
+<meta property="og:title" content="Meet My Menu | Restaurant menus read aloud" />
+<meta property="og:description" content="Meet My Menu helps blind and low-vision diners scan paper menus or find menus online, hear them read aloud, and ask questions by voice." />
+<meta property="og:url" content="https://meetmymenu.com/" />
+<meta property="og:image" content="https://meetmymenu.com/assets/images/hands-holding-menu-no-scissors.png" />
+<meta property="og:image:alt" content="Hands holding a printed restaurant menu at a table." />
+<meta name="twitter:card" content="summary_large_image" /><meta name="twitter:title" content="Meet My Menu | Restaurant menus read aloud" />
+<meta name="twitter:description" content="Meet My Menu helps blind and low-vision diners scan paper menus or find menus online, hear them read aloud, and ask questions by voice." />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Meet My Menu","applicationCategory":"AccessibilityApplication","operatingSystem":"Web","url":"https://meetmymenu.com/","description":"Meet My Menu helps blind and low-vision diners scan paper menus or find menus online, hear them read aloud, and ask questions by voice.","image":"https://meetmymenu.com/assets/images/hands-holding-menu-no-scissors.png"}
+</script></head>
 <body>
 
 <header class="site-head" id="head">
@@ -20,12 +34,13 @@
       <span class="mark" aria-hidden="true"><i></i></span>
       <span><b>Meet My</b><span class="v"> Menu</span></span>
     </a>
-    <div class="nav-links">
+    <button class="nav-toggle" type="button" aria-controls="site-menu" aria-expanded="false" aria-label="Open navigation"><span aria-hidden="true">Menu</span></button>
+    <div class="nav-links" id="site-menu" data-open="false">
       <a href="#demo-section">How it works</a>
       <a href="about.html">About</a>
       <a href="partners.html">Partners</a>
       <a href="blog.html">Blog</a>
-      <a class="btn btn-primary" href="https://app.meetthemenu.com/">Open the app</a>
+      <a class="btn btn-primary" href="https://app.meetmymenu.com/">Open the app</a>
     </div>
   </nav>
 </header>
@@ -33,49 +48,34 @@
 <main id="top">
 
   <!-- ═══════════════════════ HERO ═══════════════════════ -->
-  <section class="hero section-pad" aria-labelledby="hero-h">
+  <section class="hero" aria-labelledby="hero-h">
+    <picture class="hero-media">
+      <img src="assets/images/hands-holding-menu-no-scissors.png" alt="Hands holding a printed menu at a restaurant table." width="1023" height="1537" fetchpriority="high" />
+    </picture>
+    <div class="hero-shade" aria-hidden="true"></div>
     <div class="wrap">
       <div class="hero-grid">
-
         <div class="hero-copy">
-          <p class="eyebrow reveal">Voice-first menu reader</p>
-          <h1 class="display reveal" data-d="1" id="hero-h">Restaurant menus,<br/><em>read aloud.</em></h1>
-          <p class="lede reveal" data-d="2">Scan a paper menu or find one online. Meet My Menu reads the dishes aloud and answers your questions by voice.</p>
+          <p class="eyebrow reveal">For blind and low-vision diners</p>
+          <h1 class="display reveal" data-d="1" id="hero-h">Restaurant menus, <em>read aloud.</em></h1>
+          <p class="lede reveal" data-d="2">Scan a paper menu or find one online. Meet My Menu reads it aloud and answers questions by voice.</p>
           <div class="hero-cta reveal" data-d="3">
-            <a class="btn btn-primary btn-lg" href="https://app.meetthemenu.com/">Open Meet My Menu <span class="arrow">→</span></a>
-            <a class="btn btn-ghost btn-lg" href="#demo-section">See how it works <span class="arrow">→</span></a>
-          </div>
-          <p class="hero-note reveal" data-d="3">
-            <span class="hbars" aria-hidden="true"><b></b><b></b><b></b><b></b><b></b><b></b><b></b></span>
-            <span><strong>Built for blind and low-vision diners</strong></span>
-          </p>
-        </div>
-
-        <div class="hero-phone-wrap reveal" data-d="2">
-          <div class="glow-ring" aria-hidden="true"></div>
-          <div class="phone" role="img" aria-label="Meet My Menu chat: allergen check on carbonara">
-            <div class="phone-notch" aria-hidden="true"></div>
-            <div class="phone-screen">
-              <div class="status-bar"><span>7:24</span><span class="dots" aria-hidden="true"><i class="sig"></i><i class="wifi"></i><i class="batt"></i></span></div>
-              <div class="app">
-                <p class="app-heading">Trattoria Nove</p>
-                <div class="phase"><span class="pdot"></span>Meet My Menu is speaking…</div>
-                <div class="transcript">
-                  <div class="turn a"><div class="who">Meet My Menu</div><div class="txt">Four sections: antipasti, pasta, secondi, dolci. Want me to start with pastas?</div></div>
-                  <div class="turn u"><div class="who">You</div><div class="txt">Carbonara. Safe with a shellfish allergy?</div></div>
-                  <div class="turn a flag"><div class="who">Meet My Menu</div><div class="txt"><b>The menu does not list shellfish.</b> Please confirm with restaurant staff.</div></div>
-                </div>
-                <div class="speak-bar" aria-hidden="true"><i style="width:58%"></i></div>
-                <div class="app-toggle">⦿ Conversational: ON</div>
-              </div>
-            </div>
+            <a class="btn btn-primary btn-lg" href="https://app.meetmymenu.com/">Open Meet My Menu <span class="arrow" aria-hidden="true">&rarr;</span></a>
+            <a class="btn btn-secondary btn-lg" href="#demo-section">See the demo</a>
           </div>
         </div>
-
+        <aside class="hero-purpose reveal" data-d="2" aria-labelledby="hero-purpose-title">
+  <p class="hero-purpose-label">What Meet My Menu does</p>
+  <h2 class="hero-purpose-title" id="hero-purpose-title">Understand the menu before you order.</h2>
+  <ul class="hero-purpose-list">
+    <li><strong>Scan or find a menu</strong><span>Use a paper menu or find a restaurant online.</span></li>
+    <li><strong>Hear it read aloud</strong><span>Listen to dishes, prices, and details at your pace.</span></li>
+    <li><strong>Ask follow-up questions</strong><span>Ask about ingredients, allergens, and preferences by voice.</span></li>
+  </ul>
+</aside>
       </div>
     </div>
   </section>
-
   <hr class="rule" />
 
   <!-- ═══════════════════════ WHY ═══════════════════════ -->
@@ -84,8 +84,8 @@
     <div class="wrap">
       <div class="interactive-demo-head">
         <p class="eyebrow reveal">Try the conversation</p>
-        <h2 class="display reveal" data-d="1" id="interactive-demo-h">Ask the menu a <em>real question.</em></h2>
-        <p class="lede reveal" data-d="2">Choose a question below. Meet My Menu answers from a sample restaurant menu, keeps the conversation together, and can read the latest answer aloud.</p>
+        <h2 class="display reveal" data-d="1" id="interactive-demo-h">Try it with a <em>sample menu.</em></h2>
+        <p class="lede reveal" data-d="2">Choose a question to see how Meet My Menu answers from a menu and reads the reply aloud.</p>
       </div>
 
       <div class="live-demo reveal" data-d="3">
@@ -349,7 +349,7 @@
         </form>
         <p class="cta-msg" id="cta-msg" role="status" aria-live="polite"></p>
         <p class="cta-mini" id="cta-privacy">For pilot updates and testing opportunities only.</p>
-        <a class="btn btn-ghost" href="https://app.meetthemenu.com/">Or open the app now <span class="arrow">→</span></a>
+        <a class="btn btn-ghost" href="https://app.meetmymenu.com/">Or open the app now <span class="arrow">→</span></a>
       </div>
     </div>
   </section>
@@ -371,7 +371,7 @@
         <a href="blog.html">Blog</a>
         <a href="#faq">FAQ</a>
         <a href="#signup">Sign up</a>
-        <a href="https://app.meetthemenu.com/">Open the app</a>
+        <a href="https://app.meetmymenu.com/">Open the app</a>
       </div>
     </div>
     <p class="foot-note">A voice-first menu reader for blind and low-vision diners.</p>
@@ -379,6 +379,5 @@
 </footer>
 
 <div class="draft-flag" aria-hidden="true">v3 · working draft</div>
-<script src="main.js"></script>
-</body>
+<script src="main.js"></script><script src="site.js"></script></body>
 </html>
