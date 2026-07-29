@@ -31,7 +31,8 @@ export type ScanState =
   | 'skewed'      // page is tilted/rotated relative to the camera
   | 'moving'
   | 'steadying'
-  | 'disarmed';   // captured; waiting for movement to re-arm for the next page
+  | 'disarmed'    // captured; waiting for movement to re-arm for the next page
+  | 'landscape_detected'; // menu is landscape-oriented; suggest phone rotation to landscape
 
 export interface ScannerCallbacks {
   onCoach: (msg: string) => void;
@@ -65,6 +66,7 @@ const OFFCENTER = 0.22;       // centroid offset (0..0.5) before directional hin
 const BORDER_MARGIN = 3;      // px tolerance (of 160x120) for "content touches the frame edge"
 export const TOO_FAR_BBOX = 0.42;    // content bounding box narrower than this fraction (both dims) = too far
 export const SKEW_WARN_DEG = 12;     // average edge angle offset from horizontal/vertical above this = tilted
+const LANDSCAPE_RATIO = 1.3;   // bbox aspect ratio above this = landscape-oriented menu
 
 const ESCALATE_MS = 5500;     // second-stage message after this long in a state
 const BEST_SHOT_MS = 5000;    // content+light OK this long -> capture anyway
@@ -111,6 +113,10 @@ const STAGE_MSGS: Record<string, [string, string]> = {
   moving: [
     'I can see the menu. Now hold still.',
     'Almost there. Rest your elbows on the table, take a breath, and hold the phone still. Or tap Take photo whenever you are ready.',
+  ],
+  landscape_detected: [
+    'This menu is wider than it is tall. Rotating your phone to landscape might fit it better. Turn your phone sideways, or tap Take photo to capture now.',
+    'Still a wide menu. Landscape orientation would help fit the whole width. Rotate your phone 90 degrees clockwise, or tap Take photo to continue.',
   ],
 };
 
@@ -235,6 +241,7 @@ export class MenuScanner {
   private lastAutoZoomAt = 0;
   private analysisZoom = 1;
   private announcedAutoZoom: 1 | -1 | 0 = 0;
+  private landscapeSuggestedAt = 0;  // when we last suggested landscape mode (avoid nagging)
 
   constructor() {
     this.canvas.width = W;
@@ -258,6 +265,7 @@ export class MenuScanner {
     this.armedAt = Date.now();
     this.lastAutoZoomAt = 0;
     this.announcedAutoZoom = 0;
+    this.landscapeSuggestedAt = 0;
     this.timer = setInterval(() => this.tick(), TICK_MS);
   }
 
@@ -281,6 +289,7 @@ export class MenuScanner {
     this.armed = false;
     this.steady = 0;
     this.goodSince = 0;
+    this.landscapeSuggestedAt = 0;
     this.setState('disarmed');
   }
 
@@ -468,6 +477,17 @@ export class MenuScanner {
       this.setState('skewed', `skew=${m.skewDeg.toFixed(0)}deg`);
       this.coachFor('skewed');
       this.cb.onProgress?.('skewed', 0, STEADY_TICKS);
+      return;
+    }
+
+    // Detect if the menu is landscape-oriented and suggest rotation for better framing.
+    // Only suggest once per page capture to avoid nagging.
+    const aspectRatio = m.bboxHeightFrac > 0 ? m.bboxWidthFrac / m.bboxHeightFrac : 1;
+    const isLandscape = aspectRatio > LANDSCAPE_RATIO && m.edgeDensity >= EDGE_MIN * 0.8;
+    if (isLandscape && (Date.now() - this.landscapeSuggestedAt > 8000)) {
+      this.landscapeSuggestedAt = Date.now();
+      this.setState('landscape_detected', `aspect=${aspectRatio.toFixed(1)}x`);
+      this.coachFor('landscape_detected');
       return;
     }
 

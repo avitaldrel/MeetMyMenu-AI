@@ -539,7 +539,7 @@ export default function CaptureScreen({
   };
 
   return (
-    <Screen label="Hold your phone flat over the menu.">
+    <Screen label="Hold your phone flat over the menu. Rotate to landscape if the menu is wide.">
       <div className="row" style={{ alignItems: 'center', justifyContent: 'space-between' }}>
         <Title>Capture menu</Title>
         <div
