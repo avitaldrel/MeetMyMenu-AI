@@ -56,13 +56,25 @@ export interface WebsiteSignup {
   referrer?: string | null;
 }
 
+export interface WebsiteFeedback {
+  name: string;
+  email: string;
+  feedbackType: string;
+  message: string;
+  contactOk: boolean;
+  ts: string;
+  referrer?: string | null;
+}
+
 export interface WebsiteReport {
   available: boolean;
   visits: number;
   sessions: number;
   signups: number;
+  feedback: number;
   referrers: { referrer: string; count: number }[];
   latestSignups: WebsiteSignup[];
+  latestFeedback: WebsiteFeedback[];
 }
 
 export interface MorningData {
@@ -270,7 +282,7 @@ function cleanReferrer(value: unknown): string {
 async function getWebsiteReport(hours: number): Promise<WebsiteReport> {
   const redis = redisFromEnv();
   if (!redis) {
-    return { available: false, visits: 0, sessions: 0, signups: 0, referrers: [], latestSignups: [] };
+    return { available: false, visits: 0, sessions: 0, signups: 0, feedback: 0, referrers: [], latestSignups: [], latestFeedback: [] };
   }
 
   const since = Date.now() - hours * 60 * 60 * 1000;
@@ -285,6 +297,7 @@ async function getWebsiteReport(hours: number): Promise<WebsiteReport> {
 
     const visitRows = rows.filter((row) => row.event_name === 'page_view');
     const signupRows = rows.filter((row) => row.event_name === 'waitlist_submit');
+    const feedbackRows = rows.filter((row) => row.event_name === 'feedback_submit');
     const sessionIds = new Set(
       rows
         .map((row) => (typeof row.session_id === 'string' ? row.session_id : ''))
@@ -312,20 +325,41 @@ async function getWebsiteReport(hours: number): Promise<WebsiteReport> {
       .sort((a, b) => Date.parse(b.ts) - Date.parse(a.ts))
       .slice(0, 10);
 
+    const latestFeedback = feedbackRows
+      .map((row) => {
+        const metadata = row.metadata && typeof row.metadata === 'object'
+          ? row.metadata as Record<string, unknown>
+          : {};
+        return {
+          name: typeof metadata.name === 'string' ? metadata.name : '',
+          email: typeof metadata.email === 'string' ? metadata.email : '',
+          feedbackType: typeof metadata.feedback_type === 'string' ? metadata.feedback_type : 'other',
+          message: typeof metadata.message === 'string' ? metadata.message : '',
+          contactOk: metadata.contact_ok === true,
+          ts: typeof row.ts === 'string' ? row.ts : '',
+          referrer: typeof row.referrer === 'string' ? cleanReferrer(row.referrer) : null,
+        };
+      })
+      .filter((row) => row.message)
+      .sort((a, b) => Date.parse(b.ts) - Date.parse(a.ts))
+      .slice(0, 10);
+
     return {
       available: true,
       visits: visitRows.length,
       sessions: sessionIds.size,
       signups: signupRows.length,
+      feedback: feedbackRows.length,
       referrers: Array.from(refs.entries())
         .map(([referrer, count]) => ({ referrer, count }))
         .sort((a, b) => b.count - a.count)
         .slice(0, 5),
       latestSignups,
+      latestFeedback,
     };
   } catch (err) {
     console.error('[morning] website report unavailable:', err);
-    return { available: false, visits: 0, sessions: 0, signups: 0, referrers: [], latestSignups: [] };
+    return { available: false, visits: 0, sessions: 0, signups: 0, feedback: 0, referrers: [], latestSignups: [], latestFeedback: [] };
   }
 }
 
@@ -520,7 +554,7 @@ export function renderWebsiteText(w: WebsiteReport): string {
   if (!w.available) return 'WEBSITE:\n  Not connected to the waitlist Redis store in this deployment.';
   const lines: string[] = [];
   lines.push('WEBSITE:');
-  lines.push(`  ${w.sessions} unique site visitor(s), ${w.visits} page view(s), ${w.signups} waitlist/demo request(s)`);
+  lines.push(`  ${w.sessions} unique site visitor(s), ${w.visits} page view(s), ${w.signups} waitlist/demo request(s), ${w.feedback} feedback submission(s)`);
   if (w.referrers.length) {
     lines.push(`  Referrers: ${w.referrers.map((r) => `${r.referrer} ${r.count}`).join(', ')}`);
   }
@@ -528,6 +562,15 @@ export function renderWebsiteText(w: WebsiteReport): string {
     lines.push('  Latest signups:');
     for (const s of w.latestSignups) {
       lines.push(`  - ${s.email}  |  ${fmtTs(s.ts)}${s.referrer ? `  |  ${s.referrer}` : ''}`);
+    }
+  }
+  if (w.latestFeedback.length) {
+    lines.push('  Latest feedback:');
+    for (const f of w.latestFeedback) {
+      const from = f.name || f.email || 'Anonymous';
+      const followUp = f.contactOk && f.email ? `  |  follow up: ${f.email}` : '';
+      lines.push(`  - ${from}  |  ${f.feedbackType}  |  ${fmtTs(f.ts)}${followUp}`);
+      lines.push(`    ${f.message}`);
     }
   }
   return lines.join('\n');
@@ -761,6 +804,9 @@ export function renderWebsiteHtml(w: WebsiteReport, ff: string): string {
        </div>`
     : '';
 
+  const feedback = w.latestFeedback.length
+    ? `<div style="font-family:${ff};font-size:12px;color:${C.ink};margin-top:14px"><strong>Latest feedback:</strong><br>${w.latestFeedback.map((f) => { const from = f.name || f.email || 'Anonymous'; const followUp = f.contactOk && f.email ? ` &middot; follow up: ${esc(f.email)}` : ''; return `<div style="margin-top:10px;padding-top:10px;border-top:1px solid ${C.line}"><strong>${esc(from)}</strong> <span style="color:${C.sub}">&middot; ${esc(f.feedbackType)} &middot; ${esc(fmtTs(f.ts))}${followUp}</span><br><span style="white-space:pre-wrap">${esc(f.message)}</span></div>`; }).join('')}</div>` : '';
+
   return `
   <tr><td style="padding:26px 0 8px;font-family:${ff};font-size:15px;font-weight:800;color:${C.ink}">Public website</td></tr>
   <tr><td>
@@ -769,11 +815,13 @@ export function renderWebsiteHtml(w: WebsiteReport, ff: string): string {
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
           <td style="font-family:${ff};font-size:13px;color:${C.sub};padding-right:10px"><div style="font-size:26px;font-weight:800;color:${C.ink};line-height:1">${w.sessions}</div>unique site visitors</td>
           <td style="font-family:${ff};font-size:13px;color:${C.sub};padding-right:10px"><div style="font-size:26px;font-weight:800;color:${C.ink};line-height:1">${w.visits}</div>page views</td>
-          <td style="font-family:${ff};font-size:13px;color:${C.sub}"><div style="font-size:26px;font-weight:800;color:${C.greenDk};line-height:1">${w.signups}</div>requests</td>
+          <td style="font-family:${ff};font-size:13px;color:${C.sub};padding-right:10px"><div style="font-size:26px;font-weight:800;color:${C.greenDk};line-height:1">${w.signups}</div>requests</td>
+          <td style="font-family:${ff};font-size:13px;color:${C.sub}"><div style="font-size:26px;font-weight:800;color:${C.greenDk};line-height:1">${w.feedback}</div>feedback</td>
         </tr></table>
         ${unavailable}
         ${referrers}
         ${signups}
+        ${feedback}
       </td></tr>
     </table>
   </td></tr>`;
