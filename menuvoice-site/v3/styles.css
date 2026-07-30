@@ -188,7 +188,7 @@ h2.display { font-size: clamp(32px, 4.8vw, 60px); }
 .hero-media img { display:block; width:100%; height:100%; object-fit:cover; object-position:65% 50%; filter:saturate(.8) contrast(1.04); }
 .hero-shade { z-index:-1; background:linear-gradient(90deg,rgba(13,13,15,.98) 0%,rgba(13,13,15,.9) 43%,rgba(13,13,15,.43) 76%,rgba(13,13,15,.56) 100%),linear-gradient(0deg,rgba(13,13,15,.94) 0%,transparent 34%),linear-gradient(180deg,rgba(13,13,15,.68) 0%,transparent 28%); }
 .hero .wrap { position:relative; z-index:1; width:100%; }
-.hero-grid { min-height:100svh; padding:clamp(92px,9vw,112px) 0 clamp(48px,6vw,72px); display:grid; grid-template-columns:minmax(0,1.02fr) minmax(340px,.78fr); gap:clamp(40px,7vw,104px); align-items:center; }
+.hero-grid { min-height:100svh; padding:clamp(92px,9vw,112px) 0 clamp(48px,6vw,72px); display:grid; grid-template-columns:minmax(0,1fr); align-items:center; }
 .hero-copy { position:relative; max-width:660px; }
 .hero h1 { margin:0; font-size:clamp(48px,5.6vw,76px); }
 .hero .lede { max-width:48ch; margin-top:4px; }
@@ -576,3 +576,9 @@ h2.display { font-size: clamp(32px, 4.8vw, 60px); }
 
 /* ── Draft badge ── */
 .draft-flag { position:fixed;bottom:14px;left:14px;z-index:60;font-family:var(--font-mono);font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);background:color-mix(in srgb,var(--bg) 78%,transparent);border:1px solid var(--border);padding:6px 11px;border-radius:999px;backdrop-filter:blur(8px);pointer-events:none; }
+.how-it-works-list { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; margin:32px 0 0; padding:0; list-style:none; counter-reset:how-it-works; }
+.how-it-works-list li { counter-increment:how-it-works; padding-top:18px; border-top:1px solid var(--line); }
+.how-it-works-list li::before { content:"0" counter(how-it-works); display:block; margin-bottom:12px; color:var(--accent); font:500 12px/1 var(--font-mono); letter-spacing:.08em; }
+.how-it-works-list strong { display:block; color:var(--text-primary); font-size:18px; }
+.how-it-works-list span { display:block; margin-top:7px; color:var(--text-secondary); line-height:1.55; }
+@media (max-width:720px) { .how-it-works-list { grid-template-columns:1fr; gap:22px; } }
