@@ -15,12 +15,12 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { buildMorningReport, renderText, renderEmailHtml, sendEmail, resolveRecipients, analyticsUrl } from './_morningData.js';
 
 export function shouldSendMorningReport(
-  data: { totals: { users: number }; website: { sessions: number; signups?: number } },
+  data: { totals: { users: number }; website: { sessions: number; signups?: number; feedback?: number } },
   force = false,
 ): boolean {
   // Passive website visits stay in analytics, but do not send email. Only an
-  // identified app user, a waitlist/demo signup, or a manual override does.
-  return force || data.totals.users > 0 || (data.website.signups ?? 0) > 0;
+  // identified app user, a waitlist/demo signup, feedback, or a manual override does.
+  return force || data.totals.users > 0 || (data.website.signups ?? 0) > 0 || (data.website.feedback ?? 0) > 0;
 }
 
 function authorized(req: VercelRequest): boolean {
