@@ -36,7 +36,7 @@
     </a>
     <button class="nav-toggle" type="button" aria-controls="site-menu" aria-expanded="false" aria-label="Open navigation"><span aria-hidden="true">Menu</span></button>
     <div class="nav-links" id="site-menu" data-open="false">
-      <a href="#demo-section">How it works</a>
+      <a href="#how-it-works">How it works</a>
       <a href="about.html">About</a>
       <a href="partners.html">Partners</a>
       <a href="blog.html">Blog</a>
@@ -64,15 +64,6 @@
             <a class="btn btn-secondary btn-lg" href="#demo-section">See the demo</a>
           </div>
         </div>
-        <aside class="hero-purpose reveal" data-d="2" aria-labelledby="hero-purpose-title">
-  <p class="hero-purpose-label">What Meet My Menu does</p>
-  <h2 class="hero-purpose-title" id="hero-purpose-title">Understand the menu before you order.</h2>
-  <ul class="hero-purpose-list">
-    <li><strong>Scan or find a menu</strong><span>Use a paper menu or find a restaurant online.</span></li>
-    <li><strong>Hear it read aloud</strong><span>Listen to dishes, prices, and details at your pace.</span></li>
-    <li><strong>Ask follow-up questions</strong><span>Ask about ingredients, allergens, and preferences by voice.</span></li>
-  </ul>
-</aside>
       </div>
     </div>
   </section>
@@ -80,6 +71,27 @@
 
   <!-- ═══════════════════════ WHY ═══════════════════════ -->
   <!-- ═══════════════════════ SCROLL DEMO ═══════════════════════ -->
+  <section class="section-pad how-it-works" id="how-it-works" aria-labelledby="how-it-works-title">
+    <div class="wrap how-it-works-grid">
+      <div class="how-it-works-copy">
+        <p class="eyebrow reveal">How it works</p>
+        <h2 class="display reveal" data-d="1" id="how-it-works-title">From menu to answer, <em>without the guesswork.</em></h2>
+        <p class="lede reveal" data-d="2">Meet My Menu keeps the flow simple so you can focus on deciding what to order.</p>
+        <ol class="how-it-works-list reveal" data-d="2">
+          <li><div><strong>Bring up a menu</strong><span>Scan a paper menu or find a restaurant online.</span></div></li>
+          <li><div><strong>Listen at your pace</strong><span>Hear dishes, prices, and available details read aloud.</span></div></li>
+          <li><div><strong>Ask what matters</strong><span>Use your voice to explore ingredients and preferences.</span></div></li>
+        </ol>
+      </div>
+      <div class="how-it-works-visual reveal" data-d="3" aria-hidden="true">
+        <div class="how-it-works-signal"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="how-it-works-state"><b>Menu ready</b><span>Clear information, ready to explore</span></div>
+        <div class="how-it-works-state"><b>Answer playing</b><span>Voice-first guidance, on your terms</span></div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule" />
   <section class="interactive-demo-section" id="demo-section" aria-labelledby="interactive-demo-h">
     <div class="wrap">
       <div class="interactive-demo-head">
@@ -126,101 +138,6 @@
         </div>
       </div>
     </div>
-  </section>
-
-  <hr class="rule" />
-
-  <section class="demo-section" id="legacy-demo-section" aria-label="Previous animated Meet My Menu demo" hidden>
-    <div class="demo-sticky" id="demo-sticky">
-
-      <!-- LEFT: minimal labels that stay once shown -->
-      <div class="phase-trail-col">
-        <ol class="phase-trail" id="phase-trail">
-          <li class="ptlabel" data-pid="scan">
-            <span class="pk">01 · Capture</span>
-            <p>Point at any menu. Voice coaching the whole way.</p>
-          </li>
-          <li class="ptlabel" data-pid="capture">
-            <span class="pk">Got it</span>
-            <p>Auto-shutter fires when steady.</p>
-          </li>
-          <li class="ptlabel" data-pid="reading">
-            <span class="pk">02 · Reading</span>
-            <p>Every dish spoken aloud.</p>
-          </li>
-          <li class="ptlabel" data-pid="convo">
-            <span class="pk">03 · Conversation</span>
-            <p>Ask anything. Get answers by voice.</p>
-          </li>
-        </ol>
-      </div>
-
-      <!-- CENTER: phone -->
-      <div class="demo-phone-col">
-        <div class="phone demo-phone" id="demo-phone" role="img" aria-label="Animated Meet My Menu demo">
-          <div class="phone-notch" aria-hidden="true"></div>
-          <div class="phone-screen">
-            <div class="status-bar"><span>7:22</span><span class="dots" aria-hidden="true"><i class="sig"></i><i class="wifi"></i><i class="batt"></i></span></div>
-            <div class="app" id="demo-app">
-              <p class="app-heading">The Greenhouse</p>
-
-              <!-- Camera / scan -->
-              <div class="pscreen" id="ps-cam">
-                <div class="cam scan-cam" id="demo-cam" data-phase="0">
-                  <div class="menu-ghost" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
-                  <div class="bracket tl"></div><div class="bracket tr"></div>
-                  <div class="bracket bl"></div><div class="bracket br"></div>
-                  <div class="scan-line"></div>
-                  <div class="flash" id="demo-flash"></div>
-                  <div class="coach scan-coach"><span class="cdot"></span><span id="demo-coach">Finding the menu…</span></div>
-                  <div class="cam-foot"><div class="shutter"></div></div>
-                </div>
-                <div class="app-toggle">⦿ Auto-capture: ON</div>
-              </div>
-
-              <!-- Reading: menu extraction -->
-              <div class="pscreen" id="ps-read" style="display:none">
-                <div class="phase"><span class="pdot"></span>Reading the menu…</div>
-                <div class="menu-extract" aria-hidden="true">
-                  <div class="me-row me-hdr">Starters</div>
-                  <div class="me-row">Soup of the day<span class="me-price">£7</span></div>
-                  <div class="me-row">Halloumi flatbread<span class="me-price">£9</span></div>
-                  <div class="me-row me-hdr">Mains</div>
-                  <div class="me-row">Squash risotto<span class="me-price">£11</span></div>
-                  <div class="me-row">Lentil dahl<span class="me-price">£10</span></div>
-                  <div class="me-row">Roast chicken<span class="me-price">£16</span></div>
-                  <div class="me-row me-hdr">Desserts</div>
-                  <div class="me-row">Sticky toffee pudding<span class="me-price">£7</span></div>
-                </div>
-                <p class="read-note">18 dishes · 4 sections</p>
-              </div>
-
-              <!-- Conversation -->
-              <div class="pscreen" id="ps-convo" style="display:none">
-                <div class="phase" id="cv-phase"><span class="pdot"></span><span id="cv-phase-txt">Meet My Menu is speaking…</span></div>
-                <div class="cv-conv" id="cv-conv" aria-label="Example Meet My Menu conversation"></div>
-                <div class="speak-bar" aria-hidden="true"><i id="cv-bar-fill" style="width:0%"></i></div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- RIGHT: audio viz canvas -->
-      <div class="demo-viz-col" aria-hidden="true">
-        <canvas id="viz-canvas"></canvas>
-        <div class="scroll-cue" id="scroll-cue">
-          <span>scroll</span>
-          <svg width="14" height="20" viewBox="0 0 14 20" fill="none" aria-hidden="true">
-            <rect x="5" y="1" width="4" height="7" rx="2" stroke="currentColor" stroke-width="1.5"/>
-            <path d="M7 13l-3.5 5h7L7 13z" fill="currentColor" opacity="0.4"/>
-          </svg>
-        </div>
-      </div>
-
-    </div>
-    <div class="demo-prog" aria-hidden="true"><div id="demo-prog-fill"></div></div>
   </section>
 
   <hr class="rule" />
@@ -364,7 +281,7 @@
         <span><b>Meet My</b><span class="v"> Menu</span></span>
       </a>
       <div class="links">
-        <a href="#demo-section">How it works</a>
+        <a href="#how-it-works">How it works</a>
         <a href="about.html">About</a>
         <a href="accessibility.html">Accessibility</a>
         <a href="partners.html">Partners</a>
