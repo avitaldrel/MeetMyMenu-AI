@@ -523,6 +523,13 @@ body::before {
   cursor: default;
 }
 
+.upload-photos-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
 /* ── Input ────────────────────────────────────────── */
 .input {
   min-height: var(--touch);

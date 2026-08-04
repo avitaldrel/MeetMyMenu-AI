@@ -37,7 +37,7 @@
     <button class="nav-toggle" type="button" aria-controls="site-menu" aria-expanded="false" aria-label="Open navigation"><span aria-hidden="true">Menu</span></button>
     <div class="nav-links" id="site-menu" data-open="false">
       <a href="#how-it-works">How it works</a>
-      <a href="about.html">About</a>
+      <a href="#about">About</a>
       <a href="partners.html">Partners</a>
       <a href="blog.html">Blog</a>
       <a class="btn btn-primary" href="https://app.meetmymenu.com/">Open the app</a>
@@ -61,7 +61,7 @@
           <p class="lede reveal" data-d="2">Scan a paper menu or find one online. Meet My Menu reads it aloud and answers questions by voice.</p>
           <div class="hero-cta reveal" data-d="3">
             <a class="btn btn-primary btn-lg" href="https://app.meetmymenu.com/">Open Meet My Menu <span class="arrow" aria-hidden="true">&rarr;</span></a>
-            <a class="btn btn-secondary btn-lg" href="#demo-section">See the demo</a>
+            <a class="btn btn-secondary btn-lg" href="#how-it-works">How it works</a>
           </div>
         </div>
       </div>
@@ -69,53 +69,23 @@
   </section>
   <hr class="rule" />
 
-  <!-- ═══════════════════════ WHY ═══════════════════════ -->
-  <!-- ═══════════════════════ SCROLL DEMO ═══════════════════════ -->
-  <section class="interactive-demo-section" id="demo-section" aria-labelledby="interactive-demo-h">
-    <div class="wrap">
-      <div class="interactive-demo-head">
-        <p class="eyebrow reveal">Try the conversation</p>
-        <h2 class="display reveal" data-d="1" id="interactive-demo-h">Try it with a <em>sample menu.</em></h2>
-        <p class="lede reveal" data-d="2">Choose a question to see how Meet My Menu answers from a menu and reads the reply aloud.</p>
+  <section class="section-pad about-home" id="about" aria-labelledby="about-title">
+    <div class="wrap about-home-grid">
+      <div>
+        <p class="eyebrow reveal">About Meet My Menu</p>
+        <h2 class="display reveal" data-d="1" id="about-title">Menus should not <em>require sight.</em></h2>
+        <p class="lede reveal" data-d="2">Meet My Menu helps blind and low-vision diners hear restaurant menus and ask questions about dishes by voice.</p>
+        <p class="about-home-copy reveal" data-d="3">Use a phone browser to scan a paper menu or find one online. The app reads what it finds aloud and is designed to say when information may be incomplete.</p>
       </div>
-
-      <div class="live-demo reveal" data-d="3">
-        <div class="demo-questions">
-          <p class="demo-kicker">Sample menu · The Greenhouse</p>
-          <h3>What would you like to know?</h3>
-          <p>Try all three. Each answer is added to the same conversation.</p>
-          <div class="demo-question-list" aria-label="Sample questions">
-            <button class="demo-question" type="button" data-demo-question="ingredients">
-              <span>What’s in the risotto?</span><span class="arrow" aria-hidden="true">→</span>
-            </button>
-            <button class="demo-question" type="button" data-demo-question="shellfish">
-              <span>Anything without shellfish?</span><span class="arrow" aria-hidden="true">→</span>
-            </button>
-            <button class="demo-question" type="button" data-demo-question="history">
-              <span>What did I order last time?</span><span class="arrow" aria-hidden="true">→</span>
-            </button>
-          </div>
-          <p class="demo-sample-note">Illustrative answers from a sample menu and sample order history.</p>
+      <aside class="about-home-links reveal" data-d="2" aria-label="About Meet My Menu links">
+        <p class="demo-kicker">Try it now</p>
+        <h3>Open the app when you are ready to read a menu.</h3>
+        <p>No download is required. Learn more about how the product is being built, its limits, and how to take part.</p>
+        <div class="page-actions">
+          <a class="btn btn-primary" href="https://app.meetmymenu.com/">Open the app <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          <a class="btn btn-secondary" href="about.html">Read the full story</a>
         </div>
-
-        <div class="demo-conversation">
-          <div class="demo-chat-head">
-            <div class="demo-chat-title"><span class="demo-live-dot" aria-hidden="true"></span>Meet My Menu</div>
-            <div class="demo-status" id="interactive-demo-status" role="status">Ready for a question</div>
-          </div>
-          <p class="sr-only" id="interactive-demo-announcement" aria-live="polite"></p>
-          <div class="demo-log" id="interactive-demo-log" role="log" aria-live="off">
-            <div class="demo-empty" id="interactive-demo-empty">
-              <strong>Your conversation will appear here.</strong>
-              Choose any sample question to begin.
-            </div>
-          </div>
-          <div class="demo-chat-actions">
-            <button class="btn btn-secondary" id="interactive-demo-speak" type="button" hidden>Hear the latest answer</button>
-            <button class="demo-reset" id="interactive-demo-reset" type="button">Reset conversation</button>
-          </div>
-        </div>
-      </div>
+      </aside>
     </div>
   </section>
 
@@ -124,113 +94,23 @@
   <section class="section-pad how-it-works" id="how-it-works" aria-labelledby="how-it-works-title">
     <div class="wrap">
       <p class="eyebrow reveal">How it works</p>
-      <h2 class="display reveal" data-d="1" id="how-it-works-title">Understand the menu before you order.</h2>
-      <ol class="how-it-works-list reveal" data-d="2">
-        <li><strong>Scan or find a menu</strong><span>Use a paper menu or find a restaurant online.</span></li>
-        <li><strong>Hear it read aloud</strong><span>Listen to dishes, prices, and details at your pace.</span></li>
-        <li><strong>Ask follow-up questions</strong><span>Ask about ingredients, allergens, and preferences by voice.</span></li>
-      </ol>
-    </div>
-  </section>
-
-  <hr class="rule" />
-  <section class="demo-section" id="legacy-demo-section" aria-label="Previous animated Meet My Menu demo" hidden>
-    <div class="demo-sticky" id="demo-sticky">
-
-      <!-- LEFT: minimal labels that stay once shown -->
-      <div class="phase-trail-col">
-        <ol class="phase-trail" id="phase-trail">
-          <li class="ptlabel" data-pid="scan">
-            <span class="pk">01 · Capture</span>
-            <p>Point at any menu. Voice coaching the whole way.</p>
-          </li>
-          <li class="ptlabel" data-pid="capture">
-            <span class="pk">Got it</span>
-            <p>Auto-shutter fires when steady.</p>
-          </li>
-          <li class="ptlabel" data-pid="reading">
-            <span class="pk">02 · Reading</span>
-            <p>Every dish spoken aloud.</p>
-          </li>
-          <li class="ptlabel" data-pid="convo">
-            <span class="pk">03 · Conversation</span>
-            <p>Ask anything. Get answers by voice.</p>
-          </li>
+      <h2 class="display reveal" data-d="1" id="how-it-works-title">From menu to <em>conversation.</em></h2>
+      <div class="how-it-works-grid">
+        <ol class="how-it-works-list reveal" data-d="2">
+          <li><strong>Start with the menu in front of you</strong><span>Scan a printed menu with your phone. The app gives spoken guidance while it captures the page.</span></li>
+          <li><strong>Or find a restaurant menu online</strong><span>Search by restaurant name or paste a menu link when you do not have a paper menu in hand.</span></li>
+          <li><strong>Listen and ask follow-up questions</strong><span>Hear dishes, prices, and details at your own pace. Ask about ingredients, preferences, or something you want to compare.</span></li>
         </ol>
+        <aside class="how-it-works-limits reveal" data-d="3" aria-labelledby="limits-title">
+          <p class="demo-kicker">What to expect</p>
+          <h3 id="limits-title">A few honest answers.</h3>
+          <details open><summary>Can it confirm a dish is safe for an allergy?</summary><p>No. It can surface ingredients and allergen details it finds, but diners should always confirm with restaurant staff.</p></details>
+          <details><summary>Will every online menu be complete and current?</summary><p>No. Restaurant pages can be incomplete or out of date. Meet My Menu should say when it may not have the whole menu.</p></details>
+          <details><summary>Do I need to download anything?</summary><p>No. Meet My Menu runs in a phone browser.</p></details>
+        </aside>
       </div>
-
-      <!-- CENTER: phone -->
-      <div class="demo-phone-col">
-        <div class="phone demo-phone" id="demo-phone" role="img" aria-label="Animated Meet My Menu demo">
-          <div class="phone-notch" aria-hidden="true"></div>
-          <div class="phone-screen">
-            <div class="status-bar"><span>7:22</span><span class="dots" aria-hidden="true"><i class="sig"></i><i class="wifi"></i><i class="batt"></i></span></div>
-            <div class="app" id="demo-app">
-              <p class="app-heading">The Greenhouse</p>
-
-              <!-- Camera / scan -->
-              <div class="pscreen" id="ps-cam">
-                <div class="cam scan-cam" id="demo-cam" data-phase="0">
-                  <div class="menu-ghost" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
-                  <div class="bracket tl"></div><div class="bracket tr"></div>
-                  <div class="bracket bl"></div><div class="bracket br"></div>
-                  <div class="scan-line"></div>
-                  <div class="flash" id="demo-flash"></div>
-                  <div class="coach scan-coach"><span class="cdot"></span><span id="demo-coach">Finding the menu…</span></div>
-                  <div class="cam-foot"><div class="shutter"></div></div>
-                </div>
-                <div class="app-toggle">⦿ Auto-capture: ON</div>
-              </div>
-
-              <!-- Reading: menu extraction -->
-              <div class="pscreen" id="ps-read" style="display:none">
-                <div class="phase"><span class="pdot"></span>Reading the menu…</div>
-                <div class="menu-extract" aria-hidden="true">
-                  <div class="me-row me-hdr">Starters</div>
-                  <div class="me-row">Soup of the day<span class="me-price">£7</span></div>
-                  <div class="me-row">Halloumi flatbread<span class="me-price">£9</span></div>
-                  <div class="me-row me-hdr">Mains</div>
-                  <div class="me-row">Squash risotto<span class="me-price">£11</span></div>
-                  <div class="me-row">Lentil dahl<span class="me-price">£10</span></div>
-                  <div class="me-row">Roast chicken<span class="me-price">£16</span></div>
-                  <div class="me-row me-hdr">Desserts</div>
-                  <div class="me-row">Sticky toffee pudding<span class="me-price">£7</span></div>
-                </div>
-                <p class="read-note">18 dishes · 4 sections</p>
-              </div>
-
-              <!-- Conversation -->
-              <div class="pscreen" id="ps-convo" style="display:none">
-                <div class="phase" id="cv-phase"><span class="pdot"></span><span id="cv-phase-txt">Meet My Menu is speaking…</span></div>
-                <div class="cv-conv" id="cv-conv" aria-label="Example Meet My Menu conversation"></div>
-                <div class="speak-bar" aria-hidden="true"><i id="cv-bar-fill" style="width:0%"></i></div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- RIGHT: audio viz canvas -->
-      <div class="demo-viz-col" aria-hidden="true">
-        <canvas id="viz-canvas"></canvas>
-        <div class="scroll-cue" id="scroll-cue">
-          <span>scroll</span>
-          <svg width="14" height="20" viewBox="0 0 14 20" fill="none" aria-hidden="true">
-            <rect x="5" y="1" width="4" height="7" rx="2" stroke="currentColor" stroke-width="1.5"/>
-            <path d="M7 13l-3.5 5h7L7 13z" fill="currentColor" opacity="0.4"/>
-          </svg>
-        </div>
-      </div>
-
     </div>
-    <div class="demo-prog" aria-hidden="true"><div id="demo-prog-fill"></div></div>
   </section>
-
-  <hr class="rule" />
-
-  <!-- ═══════════════════════ PARTNERS ═══════════════════════ -->
-  <!-- ═══════════════════════ CTA ═══════════════════════ -->
   <section class="section-pad research-voices" id="voices" aria-labelledby="voices-h">
     <div class="wrap">
       <div class="voices-head">
@@ -267,6 +147,13 @@
 
   <hr class="rule" />
 
+  <section class="demo-section" id="demo-section" aria-labelledby="demo-heading">
+    <div class="demo-sticky">
+      <div class="phase-trail-col"><div class="demo-copy"><p class="eyebrow">A quick look inside</p><h2 class="display" id="demo-heading">A menu, read <em>step by step.</em></h2><ol class="phase-trail" id="phase-trail"><li class="ptlabel" data-pid="scan"><span class="pk">01 · Capture</span><p>Point at a menu and get spoken guidance.</p></li><li class="ptlabel" data-pid="capture"><span class="pk">Captured</span><p>The app takes the photo when it is ready.</p></li><li class="ptlabel" data-pid="reading"><span class="pk">02 · Reading</span><p>Menu sections and dishes become readable.</p></li><li class="ptlabel" data-pid="convo"><span class="pk">03 · Ask</span><p>Ask a follow-up question in plain language.</p></li></ol></div></div>
+      <div class="demo-phone-col"><div class="phone demo-phone" role="img" aria-label="Animated example of Meet My Menu scanning, reading, and answering a question"><div class="phone-notch" aria-hidden="true"></div><div class="phone-screen"><div class="status-bar"><span>7:22</span><span class="dots" aria-hidden="true"><i class="sig"></i><i class="wifi"></i><i class="batt"></i></span></div><div class="app" id="demo-app"><p class="app-heading">The Greenhouse</p><div class="pscreen" id="ps-cam"><div class="cam scan-cam" id="demo-cam" data-phase="0"><div class="menu-ghost" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div><div class="bracket tl"></div><div class="bracket tr"></div><div class="bracket bl"></div><div class="bracket br"></div><div class="scan-line"></div><div class="flash" id="demo-flash"></div><div class="coach scan-coach"><span class="cdot"></span><span id="demo-coach">Finding the menu…</span></div><div class="cam-foot"><div class="shutter"></div></div></div><div class="app-toggle">Auto-capture: on</div></div><div class="pscreen" id="ps-read" style="display:none"><div class="phase"><span class="pdot"></span>Reading the menu…</div><div class="menu-extract" aria-hidden="true"><div class="me-row me-hdr">Starters</div><div class="me-row">Soup of the day<span class="me-price">$7</span></div><div class="me-row">Halloumi flatbread<span class="me-price">$9</span></div><div class="me-row me-hdr">Mains</div><div class="me-row">Squash risotto<span class="me-price">$11</span></div><div class="me-row">Lentil dahl<span class="me-price">$10</span></div><div class="me-row">Roast chicken<span class="me-price">$16</span></div></div><p class="read-note">18 dishes · 4 sections</p></div><div class="pscreen" id="ps-convo" style="display:none"><div class="phase" id="cv-phase"><span class="pdot"></span><span id="cv-phase-txt">Meet My Menu is speaking…</span></div><div class="cv-conv" id="cv-conv" aria-label="Example Meet My Menu conversation"></div><div class="speak-bar" aria-hidden="true"><i id="cv-bar-fill" style="width:0%"></i></div></div></div></div></div></div></div>
+    </div>
+    <div class="demo-prog" aria-hidden="true"><div id="demo-prog-fill"></div></div>
+  </section>
   <section class="section-pad" id="partners" aria-labelledby="part-h">
     <div class="wrap">
       <p class="eyebrow reveal">Get involved</p>
@@ -297,35 +184,6 @@
           <div class="spacer"></div>
           <a class="btn btn-secondary" href="#signup">Partner with us <span class="arrow">→</span></a>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <hr class="rule" />
-
-  <section class="section-pad faq-section" id="faq" aria-labelledby="faq-h">
-    <div class="wrap faq-wrap">
-      <div>
-        <p class="eyebrow reveal">Good to know</p>
-        <h2 class="display reveal" data-d="1" id="faq-h">A few honest <em>answers.</em></h2>
-      </div>
-      <div class="faq-list reveal" data-d="2">
-        <details>
-          <summary>Can Meet My Menu confirm that a dish is safe for an allergy?</summary>
-          <p>Meet My Menu brings possible allergen concerns to your attention. It highlights the ingredients and allergen information it finds so you know what to ask about and can confirm it with restaurant staff.</p>
-        </details>
-        <details>
-          <summary>Where does the menu information come from?</summary>
-          <p>You can scan a paper menu, search for a restaurant, or paste a menu link. Meet My Menu tells you when information may be incomplete or inferred.</p>
-        </details>
-        <details>
-          <summary>Do I need to download anything?</summary>
-          <p>No. Meet My Menu opens in your phone's web browser. Use the “Open the app” link whenever you want to start.</p>
-        </details>
-        <details>
-          <summary>How can I help?</summary>
-          <p>Join as a diner or tester, or sign up as a restaurant, accessibility organization, or funder below.</p>
-        </details>
       </div>
     </div>
   </section>
@@ -373,7 +231,6 @@
         <a href="accessibility.html">Accessibility</a>
         <a href="partners.html">Partners</a>
         <a href="blog.html">Blog</a>
-        <a href="#faq">FAQ</a>
         <a href="#signup">Sign up</a>
         <a href="https://app.meetmymenu.com/">Open the app</a>
       </div>
