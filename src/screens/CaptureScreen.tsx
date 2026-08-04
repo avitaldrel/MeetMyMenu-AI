@@ -159,6 +159,29 @@ export default function CaptureScreen({
     };
   }, []);
 
+  // Turning the phone swaps the camera track's dimensions, and a <video> fires
+  // 'resize' when that happens (loadedmetadata does not fire a second time).
+  // Without this the preview box keeps the old shape and letterboxes the frame,
+  // so the picture a sighted helper sees stops matching what is being analysed.
+  // The scanner re-shapes its own analysis buffer independently, in analyze().
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    const onResize = () => {
+      if (!video.videoWidth || !video.videoHeight) return;
+      setPreviewAspect(`${video.videoWidth} / ${video.videoHeight}`);
+      track('capture', 'orientation_change', {
+        metadata: {
+          width: video.videoWidth,
+          height: video.videoHeight,
+          orientation: video.videoWidth >= video.videoHeight ? 'landscape' : 'portrait',
+        },
+      });
+    };
+    video.addEventListener('resize', onResize);
+    return () => video.removeEventListener('resize', onResize);
+  }, []);
+
   // Pause Voice stops the auto-capture scanner here too. pause() calls this
   // handler synchronously, so the scanner stops the moment the button is
   // pressed — before any React re-render. The paused-gated effects below then
@@ -539,7 +562,7 @@ export default function CaptureScreen({
   };
 
   return (
-    <Screen label="Hold your phone flat over the menu.">
+    <Screen label="Hold your phone flat over the menu. I'll tell you how to line it up.">
       <div className="row" style={{ alignItems: 'center', justifyContent: 'space-between' }}>
         <Title>Capture menu</Title>
         <div
