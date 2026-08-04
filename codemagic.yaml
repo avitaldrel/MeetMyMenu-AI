@@ -48,7 +48,11 @@ workflows:
     artifacts:
       - build/ios/ipa/*.ipa
 
-    publishing:
-      app_store_connect:
-        auth: integration
-        submit_to_testflight: true
+    # TestFlight publishing needs an App Store Connect integration added in
+    # Codemagic's Team settings first (Integrations -> App Store Connect).
+    # Once that's set up, add back:
+    #
+    # publishing:
+    #   app_store_connect:
+    #     auth: integration
+    #     submit_to_testflight: true
