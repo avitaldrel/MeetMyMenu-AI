@@ -10,13 +10,15 @@ import { Screen, Title, Heading, Body, PrimaryButton } from '../components';
 import { useProfile } from '../state/ProfileContext';
 import { restoreFromCloud, isDifferentUser, clearLocalUserData, establishSyncSession } from '../lib/storage';
 import { track } from '../lib/telemetry';
+import { isNativePlatform, signInWithGoogleNative } from '../lib/nativeGoogleAuth';
 
 interface GoogleJwt {
   email: string;
   name?: string;
 }
 
-const googleAvailable = !!import.meta.env.VITE_GOOGLE_CLIENT_ID;
+const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined;
+const googleAvailable = !!googleClientId;
 
 export default function LoginScreen() {
   const { profile, update } = useProfile();
@@ -45,10 +47,9 @@ export default function LoginScreen() {
     });
   };
 
-  const handleGoogleSuccess = async (credentialResponse: { credential?: string }) => {
-    if (!credentialResponse.credential) return;
+  const handleGoogleIdToken = async (idToken: string) => {
     try {
-      const decoded = jwtDecode<GoogleJwt>(credentialResponse.credential);
+      const decoded = jwtDecode<GoogleJwt>(idToken);
       announce(`Welcome, ${decoded.name ?? decoded.email}. Signing you in.`);
       // Exchange for a verified sync session BEFORE loading cloud data, so
       // this first load can actually use it. The server-verified email is the
@@ -56,7 +57,7 @@ export default function LoginScreen() {
       // the server isn't configured for it yet) sign-in still proceeds
       // locally with the client-decoded email — cloud sync just stays
       // unavailable until a later successful Google sign-in.
-      const verifiedEmail = await establishSyncSession(credentialResponse.credential);
+      const verifiedEmail = await establishSyncSession(idToken);
       await loginWithEmail(verifiedEmail ?? decoded.email, decoded.name, 'google');
     } catch {
       announce('Google sign-in failed. Please enter your email instead.');
@@ -65,10 +66,26 @@ export default function LoginScreen() {
     }
   };
 
+  const handleGoogleSuccess = async (credentialResponse: { credential?: string }) => {
+    if (!credentialResponse.credential) return;
+    await handleGoogleIdToken(credentialResponse.credential);
+  };
+
   const handleGoogleError = () => {
     announce('Google sign-in failed. Please enter your email instead.');
     track('auth', 'login', { outcome: 'failure', metadata: { method: 'google' } });
     setShowEmail(true);
+  };
+
+  const handleNativeGoogleLogin = async () => {
+    if (!googleClientId) return;
+    announce('Opening Google sign-in.');
+    const idToken = await signInWithGoogleNative(googleClientId);
+    if (!idToken) {
+      announce('Google sign-in was cancelled.');
+      return;
+    }
+    await handleGoogleIdToken(idToken);
   };
 
   return (
@@ -79,15 +96,23 @@ export default function LoginScreen() {
       {/* ── Google Sign-In ─────────────────────────────── */}
       {googleAvailable && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'stretch' }}>
-          <GoogleLogin
-            onSuccess={handleGoogleSuccess}
-            onError={handleGoogleError}
-            useOneTap={false}
-            text="signin_with"
-            shape="rectangular"
-            size="large"
-            width="100%"
-          />
+          {isNativePlatform ? (
+            <PrimaryButton
+              label="Sign in with Google"
+              onClick={handleNativeGoogleLogin}
+              hint="Opens Google sign-in in your browser"
+            />
+          ) : (
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleError}
+              useOneTap={false}
+              text="signin_with"
+              shape="rectangular"
+              size="large"
+              width="100%"
+            />
+          )}
           {!showEmail && (
             <button
               className="btn-ghost"

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Signing in…</title>
+</head>
+<body>
+<p>Signing in&hellip;</p>
+<script>
+  // Google's implicit flow returns the id_token in the URL fragment, which
+  // browsers never send to the server — so this page has to run client-side
+  // to read it. Its only job is handing that fragment to the native app via
+  // its custom URL scheme; Capacitor's system-browser flow can't listen for
+  // an https redirect directly, only for its own registered scheme.
+  var fragment = window.location.hash || '';
+  window.location.replace('com.meetmymenu.app://oauth-callback' + fragment);
+</script>
+</body>
+</html>
