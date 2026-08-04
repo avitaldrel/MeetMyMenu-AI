@@ -21,6 +21,14 @@
     "api/menu-from-url.ts": { "maxDuration": 60 },
     "api/find-menu.ts": { "maxDuration": 60 }
   },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive" }
+      ]
+    }
+  ],
   "crons": [
     { "path": "/api/cron-morning", "schedule": "0 11 * * *" }
   ]
