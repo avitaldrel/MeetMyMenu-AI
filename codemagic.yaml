@@ -1,0 +1,54 @@
+workflows:
+  ios-build:
+    name: iOS build
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    environment:
+      node: 20
+      vars:
+        VITE_GOOGLE_CLIENT_ID: $VITE_GOOGLE_CLIENT_ID
+        VITE_OPENAI_API_KEY: $VITE_OPENAI_API_KEY
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.meetmymenu.app
+    scripts:
+      - name: Install dependencies
+        script: npm ci
+
+      - name: Build the web app
+        script: npm run build
+
+      # ios/ isn't committed to the repo (it's Xcode/CocoaPods-generated and
+      # this team has no Mac to generate it locally), so every build creates
+      # it fresh and re-applies the plist edits below.
+      - name: Add and sync the iOS platform
+        script: |
+          npx cap add ios
+          npx cap sync ios
+
+      - name: Add required Info.plist entries
+        script: |
+          PLIST="ios/App/App/Info.plist"
+          plutil -replace NSCameraUsageDescription -string \
+            "Meet My Menu uses the camera to photograph restaurant menus so they can be read aloud." "$PLIST"
+          plutil -replace NSMicrophoneUsageDescription -string \
+            "Meet My Menu uses the microphone for voice commands and questions about the menu." "$PLIST"
+          plutil -insert CFBundleURLTypes -json '[{"CFBundleURLSchemes":["com.meetmymenu.app"]}]' "$PLIST"
+
+      - name: Set up code signing
+        script: |
+          xcode-project use-profiles
+
+      - name: Build the .ipa
+        script: |
+          xcode-project build-ipa \
+            --workspace "ios/App/App.xcworkspace" \
+            --scheme "App"
+
+    artifacts:
+      - build/ios/ipa/*.ipa
+
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
