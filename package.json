@@ -16,6 +16,8 @@
     "a11y:report": "node scripts/a11y/report.mjs"
   },
   "dependencies": {
+    "@capacitor/cli": "^8.5.0",
+    "@capacitor/core": "^8.5.0",
     "@react-oauth/google": "^0.13.5",
     "@upstash/redis": "^1.38.0",
     "@vercel/blob": "^2.4.0",
