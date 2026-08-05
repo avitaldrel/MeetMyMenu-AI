@@ -32,7 +32,7 @@ export type ScanState =
   | 'moving'
   | 'steadying'
   | 'disarmed'    // captured; waiting for movement to re-arm for the next page
-  | 'landscape_detected'; // menu is landscape-oriented; suggest phone rotation to landscape
+  | 'rotateDevice'; // advisory only: reported to telemetry, never entered as a state
 
 export interface ScannerCallbacks {
   onCoach: (msg: string) => void;
@@ -44,11 +44,30 @@ export interface ScannerCallbacks {
   onAutoZoom?: (direction: 1 | -1) => boolean;
 }
 
-const W = 160;
-const H = 120;
+// Per-frame analysis runs on a downsampled buffer. The buffer must keep the
+// CAMERA's aspect ratio: squashing a 9:16 portrait frame into a fixed 4:3
+// buffer stretches x relative to y by ~2.4x, which silently corrupts every
+// geometric metric. Measured effect of the old fixed 160x120 buffer:
+//   portrait phone : a real 20deg tilt read as 11deg -> no warning at all
+//   landscape phone: a real  8deg tilt read as 13deg -> false "menu is tilted"
+// So the app under-warned in the orientation people actually hold a phone, and
+// nagged in the other. analysisSize() keeps the pixel BUDGET at ~160x120 (so
+// the luminance/glare/edge/sharpness thresholds below stay valid, since those
+// depend on pixel count rather than shape) while matching the frame's shape.
+const ANALYSIS_PIXELS = 160 * 120;
 const TICK_MS = 170;
 
-// Thresholds (tuned for indoor restaurant light; metrics computed at 160x120).
+/** Analysis buffer dimensions for a video frame: same aspect, ~constant area. */
+export function analysisSize(videoWidth: number, videoHeight: number): { w: number; h: number } {
+  if (!videoWidth || !videoHeight) return { w: 160, h: 120 };
+  const aspect = videoWidth / videoHeight;
+  const w = Math.max(16, Math.round(Math.sqrt(ANALYSIS_PIXELS * aspect)));
+  const h = Math.max(16, Math.round(w / aspect));
+  return { w, h };
+}
+
+// Thresholds (tuned for indoor restaurant light; metrics computed over an
+// ~19200-pixel buffer, whatever shape the camera frame is — see analysisSize).
 // Exported so lib/photoQuality.ts can judge a STILL photo by the identical
 // dark/blur/glare/framing/skew bar used to coach the live camera — one
 // source of truth for "is this readable" across both live and post-capture.
@@ -63,10 +82,25 @@ const STEADY_TICKS = 4;       // ~0.7s of steady before the shutter
 const OFFCENTER = 0.22;       // centroid offset (0..0.5) before directional hint
 
 // Framing (distance + rotation) thresholds — see computeFrameMetrics().
-const BORDER_MARGIN = 3;      // px tolerance (of 160x120) for "content touches the frame edge"
+// Border tolerance is a FRACTION of each axis, not an absolute pixel count, so
+// "content reaches the edge" means the same thing on a tall buffer as a wide
+// one. 2% reproduces the old 3px on a 160-wide buffer.
+const BORDER_MARGIN_FRAC = 0.02;
 export const TOO_FAR_BBOX = 0.42;    // content bounding box narrower than this fraction (both dims) = too far
-export const SKEW_WARN_DEG = 12;     // average edge angle offset from horizontal/vertical above this = tilted
-const LANDSCAPE_RATIO = 1.3;   // bbox aspect ratio above this = landscape-oriented menu
+// Skew now measures the TRUE page angle (see analysisSize). Before the aspect
+// fix the reading was distorted, so 12 here really meant "warn at ~28deg in
+// portrait, ~8deg in landscape". Against a faithful measurement 18 warns at a
+// real tilt of roughly 15deg — past the point where a page looks crooked, but
+// forgiving of the few degrees nobody can hold a phone within, and well inside
+// what the vision model reads without trouble.
+export const SKEW_WARN_DEG = 18;
+// Orientation mismatch: the menu's long edge runs across the frame's SHORT
+// edge, so turning the phone would gain real estate. Ratios are generous —
+// letter landscape is 1.29, so 1.25 catches it while ignoring square-ish pages.
+const ROTATE_CONTENT_RATIO = 1.25;
+// ...but only worth saying when the page is actually letterboxed. If content
+// already fills the frame both ways, rotating gains nothing.
+const ROTATE_SLACK_FRAC = 0.72;
 
 const ESCALATE_MS = 5500;     // second-stage message after this long in a state
 const BEST_SHOT_MS = 5000;    // content+light OK this long -> capture anyway
@@ -114,11 +148,18 @@ const STAGE_MSGS: Record<string, [string, string]> = {
     'I can see the menu. Now hold still.',
     'Almost there. Rest your elbows on the table, take a breath, and hold the phone still. Or tap Take photo whenever you are ready.',
   ],
-  landscape_detected: [
-    'This menu is wider than it is tall. Rotating your phone to landscape might fit it better. Turn your phone sideways, or tap Take photo to capture now.',
-    'Still a wide menu. Landscape orientation would help fit the whole width. Rotate your phone 90 degrees clockwise, or tap Take photo to continue.',
-  ],
 };
+
+// Rotation advice. Phrased so it is followable without seeing the screen: name
+// the direction to turn, say what it achieves, and make clear it is optional —
+// auto capture keeps working either way, so nobody is stuck waiting on it.
+const ROTATE_MSGS: Record<'toLandscape' | 'toPortrait', string> = {
+  toLandscape:
+    'This menu is wider than it is tall. Turning the phone sideways, so its long edge runs left to right, will fit more of it. You can also keep going as you are.',
+  toPortrait:
+    'This menu is taller than it is wide. Holding the phone upright will fit more of it. You can also keep going as you are.',
+};
+const ROTATE_HINT_MS = 12000; // don't repeat the same rotation advice sooner
 
 export interface FrameMetrics {
   luminance: number;
@@ -133,6 +174,10 @@ export interface FrameMetrics {
   bboxHeightFrac: number; // 0..1
   touchesBorder: boolean; // content bbox reaches opposite frame edges — page is cropped, too close
   skewDeg: number;        // 0..45, mean edge-angle distance from the nearest axis (0 = level)
+  // Orientation. Both are true geometry as long as the buffer keeps the
+  // camera's aspect ratio (analysisSize) — that is what makes them comparable.
+  frameAspect: number;    // buffer w/h: >1 camera is landscape, <1 portrait
+  contentAspect: number;  // detected page w/h: >1 the menu is wider than tall; 0 when no content
 }
 
 /**
@@ -201,12 +246,22 @@ export function computeFrameMetrics(gray: Float32Array, w: number, h: number, pr
   const hasContent = eTotal > 0;
   const bboxWidthFrac = hasContent ? (bboxMaxX - bboxMinX + 1) / w : 0;
   const bboxHeightFrac = hasContent ? (bboxMaxY - bboxMinY + 1) / h : 0;
-  const touchesLeft = hasContent && bboxMinX <= 1 + BORDER_MARGIN;
-  const touchesRight = hasContent && bboxMaxX >= w - 2 - BORDER_MARGIN;
-  const touchesTop = hasContent && bboxMinY <= 1 + BORDER_MARGIN;
-  const touchesBottom = hasContent && bboxMaxY >= h - 2 - BORDER_MARGIN;
+  const marginX = Math.max(1, Math.round(w * BORDER_MARGIN_FRAC));
+  const marginY = Math.max(1, Math.round(h * BORDER_MARGIN_FRAC));
+  const touchesLeft = hasContent && bboxMinX <= 1 + marginX;
+  const touchesRight = hasContent && bboxMaxX >= w - 2 - marginX;
+  const touchesTop = hasContent && bboxMinY <= 1 + marginY;
+  const touchesBottom = hasContent && bboxMaxY >= h - 2 - marginY;
   const touchesBorder = (touchesLeft && touchesRight) || (touchesTop && touchesBottom);
   const skewDeg = hasContent ? skewSum / eTotal : 0;
+
+  // Content aspect in real pixels, not frame fractions: a bbox covering 100% of
+  // a 104-wide buffer and 44% of a 185-tall one is a WIDE page (104 x 81), even
+  // though the fractions alone would suggest the opposite.
+  const frameAspect = w / h;
+  const contentAspect = hasContent && bboxHeightFrac > 0
+    ? (bboxWidthFrac * w) / (bboxHeightFrac * h)
+    : 0;
 
   let motion = Infinity;
   if (prevGray) {
@@ -218,7 +273,27 @@ export function computeFrameMetrics(gray: Float32Array, w: number, h: number, pr
   return {
     luminance, glareFrac, sharpness, edgeDensity, cx, cy, motion,
     bboxWidthFrac, bboxHeightFrac, touchesBorder, skewDeg,
+    frameAspect, contentAspect,
   };
+}
+
+/**
+ * Would turning the phone 90 degrees fit more of this menu in frame?
+ *
+ * True only when the page's long edge runs across the frame's short edge AND
+ * the page is letterboxed enough that rotating actually gains room. Pure, so
+ * the exact trigger conditions are unit-testable.
+ */
+export function shouldSuggestRotation(m: FrameMetrics): 'toLandscape' | 'toPortrait' | null {
+  if (m.contentAspect <= 0 || m.edgeDensity < EDGE_MIN) return null;
+  const framePortrait = m.frameAspect < 1;
+  if (framePortrait && m.contentAspect > ROTATE_CONTENT_RATIO && m.bboxHeightFrac < ROTATE_SLACK_FRAC) {
+    return 'toLandscape';
+  }
+  if (!framePortrait && m.contentAspect < 1 / ROTATE_CONTENT_RATIO && m.bboxWidthFrac < ROTATE_SLACK_FRAC) {
+    return 'toPortrait';
+  }
+  return null;
 }
 
 export class MenuScanner {
@@ -241,11 +316,12 @@ export class MenuScanner {
   private lastAutoZoomAt = 0;
   private analysisZoom = 1;
   private announcedAutoZoom: 1 | -1 | 0 = 0;
-  private landscapeSuggestedAt = 0;  // when we last suggested landscape mode (avoid nagging)
+  private rotateHintAt = 0;              // last time we suggested turning the phone
+  private rotateHintDirection: 'toLandscape' | 'toPortrait' | null = null;
 
   constructor() {
-    this.canvas.width = W;
-    this.canvas.height = H;
+    this.canvas.width = 160;
+    this.canvas.height = 120;
     this.ctx = this.canvas.getContext('2d', { willReadFrequently: true });
   }
 
@@ -265,7 +341,8 @@ export class MenuScanner {
     this.armedAt = Date.now();
     this.lastAutoZoomAt = 0;
     this.announcedAutoZoom = 0;
-    this.landscapeSuggestedAt = 0;
+    this.rotateHintAt = 0;
+    this.rotateHintDirection = null;
     this.timer = setInterval(() => this.tick(), TICK_MS);
   }
 
@@ -289,7 +366,6 @@ export class MenuScanner {
     this.armed = false;
     this.steady = 0;
     this.goodSince = 0;
-    this.landscapeSuggestedAt = 0;
     this.setState('disarmed');
   }
 
@@ -328,25 +404,71 @@ export class MenuScanner {
   private analyze(): FrameMetrics | null {
     const v = this.video;
     if (!v || !this.ctx || v.videoWidth === 0) return null;
+
+    // Keep the analysis buffer shaped like the camera frame. When the phone is
+    // turned the track's dimensions swap, so re-shape and drop everything that
+    // was measured against the old geometry: the previous frame (otherwise the
+    // rotation itself reads as violent motion), the steadiness streak, and the
+    // best-shot clock. The rotation hint re-arms too — the advice that was true
+    // a moment ago may be exactly backwards now.
+    const { w, h } = analysisSize(v.videoWidth, v.videoHeight);
+    if (this.canvas.width !== w || this.canvas.height !== h) {
+      this.canvas.width = w;
+      this.canvas.height = h;
+      this.prev = null;
+      this.steady = 0;
+      this.goodSince = 0;
+      this.rotateHintAt = 0;
+      this.rotateHintDirection = null;
+      // Turning the phone is progress, usually because we just asked for it —
+      // so restart the give-up clock rather than punishing the user for the
+      // seconds they spent framing the other way round.
+      this.armedAt = Date.now();
+    }
+
     if (this.analysisZoom === 1) {
-      this.ctx.drawImage(v, 0, 0, W, H);
+      this.ctx.drawImage(v, 0, 0, w, h);
     } else {
       const sourceWidth = v.videoWidth / this.analysisZoom;
       const sourceHeight = v.videoHeight / this.analysisZoom;
       const sourceX = (v.videoWidth - sourceWidth) / 2;
       const sourceY = (v.videoHeight - sourceHeight) / 2;
-      this.ctx.drawImage(v, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, W, H);
+      this.ctx.drawImage(v, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, w, h);
     }
-    const rgba = this.ctx.getImageData(0, 0, W, H).data;
+    const rgba = this.ctx.getImageData(0, 0, w, h).data;
 
-    const gray = new Float32Array(W * H);
+    const gray = new Float32Array(w * h);
     for (let i = 0, p = 0; i < rgba.length; i += 4, p++) {
       gray[p] = 0.299 * rgba[i] + 0.587 * rgba[i + 1] + 0.114 * rgba[i + 2];
     }
 
-    const metrics = computeFrameMetrics(gray, W, H, this.prev);
+    // prev is only a valid motion reference when it came from the same geometry.
+    const prev = this.prev && this.prev.length === gray.length ? this.prev : null;
+    const metrics = computeFrameMetrics(gray, w, h, prev);
     this.prev = gray;
     return metrics;
+  }
+
+  /**
+   * Advisory "turn the phone" nudge. Deliberately NOT a ScanState: it never
+   * blocks or delays a capture, it just adds a sentence when one would help.
+   * Silent during the countdown so it can't talk over "Three. Two. One.", and
+   * rate-limited so it reads as advice rather than nagging.
+   */
+  private maybeSuggestRotation(m: FrameMetrics) {
+    if (this.steady > 0) return; // mid-countdown — a capture is imminent
+    const direction = shouldSuggestRotation(m);
+    if (!direction) {
+      this.rotateHintDirection = null;
+      return;
+    }
+    const now = Date.now();
+    const changed = direction !== this.rotateHintDirection;
+    if (!changed && now - this.rotateHintAt < ROTATE_HINT_MS) return;
+    this.rotateHintAt = now;
+    this.rotateHintDirection = direction;
+    this.cb?.onState?.('rotateDevice', direction);
+    this.emit(ROTATE_MSGS[direction]);
   }
 
   private fireCapture(reason: 'steady' | 'best_shot') {
@@ -443,6 +565,13 @@ export class MenuScanner {
       return;
     }
 
+    // Content is in frame. Before the framing checks below can start pushing
+    // zoom around, say whether turning the phone would simply fit the page —
+    // this is the one situation where zoom alone cannot win, because a wide
+    // menu in a portrait frame is cropped at one zoom and tiny at the next.
+    // Advisory: never returns, never delays a capture.
+    this.maybeSuggestRotation(m);
+
     // Framing: is the whole page in frame, and is it held level? These block
     // capture the same way dark/glare/searching do — a crooked or badly
     // cropped photo is far more likely to fail menu extraction than a
@@ -477,17 +606,6 @@ export class MenuScanner {
       this.setState('skewed', `skew=${m.skewDeg.toFixed(0)}deg`);
       this.coachFor('skewed');
       this.cb.onProgress?.('skewed', 0, STEADY_TICKS);
-      return;
-    }
-
-    // Detect if the menu is landscape-oriented and suggest rotation for better framing.
-    // Only suggest once per page capture to avoid nagging.
-    const aspectRatio = m.bboxHeightFrac > 0 ? m.bboxWidthFrac / m.bboxHeightFrac : 1;
-    const isLandscape = aspectRatio > LANDSCAPE_RATIO && m.edgeDensity >= EDGE_MIN * 0.8;
-    if (isLandscape && (Date.now() - this.landscapeSuggestedAt > 8000)) {
-      this.landscapeSuggestedAt = Date.now();
-      this.setState('landscape_detected', `aspect=${aspectRatio.toFixed(1)}x`);
-      this.coachFor('landscape_detected');
       return;
     }
 
