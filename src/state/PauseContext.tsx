@@ -1,5 +1,6 @@
-import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { stopSpeaking } from '../lib/speech';
+import { useProfile } from './ProfileContext';
 
 interface PauseCtx {
   paused: boolean;
@@ -12,9 +13,23 @@ interface PauseCtx {
 const Ctx = createContext<PauseCtx | null>(null);
 
 export function PauseProvider({ children }: { children: React.ReactNode }) {
+  const { profile, loaded } = useProfile();
   const [paused, setPaused] = useState(false);
   const [status, setStatus] = useState('');
   const stopListeningRef = useRef<(() => void) | null>(null);
+
+  // Apply the saved "open menus in" preference once, as soon as the profile is
+  // read. Screen-reader users who never want the app to self-voice previously
+  // had to press Browse Menu on every single launch, because this state reset
+  // to Conversation each time. Set directly rather than through pause() so the
+  // starting mode is silent — announcing "Voice paused" for a preference the
+  // user chose deliberately would be noise, not information.
+  const appliedSavedModeRef = useRef(false);
+  useEffect(() => {
+    if (!loaded || appliedSavedModeRef.current) return;
+    appliedSavedModeRef.current = true;
+    if (profile.menuOpenMode === 'browse') setPaused(true);
+  }, [loaded, profile.menuOpenMode]);
 
   const pause = useCallback((message = 'Voice paused. Meet My Menu AI stopped speaking and the microphone is off. Your conversation is saved.') => {
     stopSpeaking();
