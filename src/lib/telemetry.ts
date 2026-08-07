@@ -38,17 +38,44 @@ function sid(): string {
   return _sid;
 }
 
+// The signed-in address changes only at sign-in/out, but track() runs on every
+// interaction — so re-reading and re-parsing the profile per event was pure
+// main-thread cost on the tap path. Cache it, refreshing at most once every
+// EMAIL_TTL_MS so a sign-in is still picked up promptly.
+const EMAIL_TTL_MS = 5000;
+let _emailCache: string | undefined;
+let _emailAt = 0;
+
 function email(): string | undefined {
+  const now = Date.now();
+  if (_emailAt && now - _emailAt < EMAIL_TTL_MS) return _emailCache;
   try {
     const raw = localStorage.getItem('menuvoice.profile.v1');
-    return raw ? (JSON.parse(raw)?.email as string) || undefined : undefined;
-  } catch { return undefined; }
+    _emailCache = raw ? (JSON.parse(raw)?.email as string) || undefined : undefined;
+  } catch { _emailCache = undefined; }
+  _emailAt = now;
+  return _emailCache;
 }
 
 function queueKey() { return `${QUEUE_KEY_PREFIX}.${sid()}`; }
 
-function persist() {
+// localStorage.setItem is SYNCHRONOUS disk I/O. Writing the whole queue on
+// every event meant each tap paid to re-serialise and re-write every event of
+// the session so far (~19 KB by 50 events) before the UI could respond. The
+// queue only exists so a crash doesn't lose events, and that is still true if
+// the write trails the event slightly — so coalesce writes and force one at
+// the moments that actually matter (flush, tab hide, page unload).
+const PERSIST_DEBOUNCE_MS = 2000;
+let _persistTimer: ReturnType<typeof setTimeout> | null = null;
+
+function persistNow() {
+  if (_persistTimer) { clearTimeout(_persistTimer); _persistTimer = null; }
   try { localStorage.setItem(queueKey(), JSON.stringify(_queue)); } catch {}
+}
+
+function schedulePersist() {
+  if (_persistTimer) return;
+  _persistTimer = setTimeout(() => { _persistTimer = null; persistNow(); }, PERSIST_DEBOUNCE_MS);
 }
 
 function restore(): TelEvent[] {
@@ -80,10 +107,15 @@ export function track(
       duration_ms: opts.durationMs,
       content: opts.content,
       metadata: opts.metadata,
-      app_version: String((import.meta.env as Record<string, unknown>).VITE_APP_VERSION ?? '1.0.0'),
+      // Optional-chained: import.meta.env only exists under Vite. Without the
+      // `?.` a missing define makes this throw on EVERY event, and track()'s
+      // catch swallows it — silently killing all telemetry rather than losing
+      // one field.
+      app_version: String((import.meta.env as Record<string, unknown> | undefined)?.VITE_APP_VERSION ?? '1.0.0'),
       user_agent: navigator.userAgent,
     });
-    persist();
+    // Deliberately NOT a synchronous write — see schedulePersist.
+    schedulePersist();
   } catch {}
 }
 
@@ -101,13 +133,13 @@ async function flush(beacon = false) {
   }
   if (body.length > MAX_BODY_BYTES) {
     // Single poison event too large to ever send: drop it instead of wedging.
-    persist();
+    persistNow();
     return;
   }
-  persist();
+  persistNow();
   if (beacon && navigator.sendBeacon) {
     const ok = navigator.sendBeacon('/api/events', new Blob([body], { type: 'application/json' }));
-    if (!ok) { _queue.unshift(...batch); persist(); }
+    if (!ok) { _queue.unshift(...batch); persistNow(); }
     return;
   }
   try {
@@ -117,8 +149,8 @@ async function flush(beacon = false) {
       body,
       keepalive: true,
     });
-    if (!r.ok) { _queue.unshift(...batch); persist(); }
-  } catch { _queue.unshift(...batch); persist(); }
+    if (!r.ok) { _queue.unshift(...batch); persistNow(); }
+  } catch { _queue.unshift(...batch); persistNow(); }
 }
 
 export function isImageLoggingOn(): boolean {
@@ -141,11 +173,14 @@ export function initTelemetry() {
   _t0 = Date.now();
   track('session', 'start');
   setInterval(() => { flush().catch(() => {}); }, FLUSH_MS);
+  // Writes are debounced off the tap path, so force one at every point the tab
+  // could go away with events still only in memory.
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') flush(true);
+    if (document.visibilityState === 'hidden') { persistNow(); flush(true); }
   });
   window.addEventListener('pagehide', () => {
     track('session', 'end', { durationMs: Date.now() - _t0 });
+    persistNow();
     flush(true);
   }, { capture: true });
 }

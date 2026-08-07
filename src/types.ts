@@ -15,7 +15,15 @@ export interface UserProfile {
   textScale?: TextScale; // global text size (default 'large')
   speechRate?: number; // Conversation Mode speaking speed multiplier (default 1)
   tutorialSeen?: boolean; // first-run tutorial shown once, then never auto-shown
+  // Which mode a menu opens in. 'conversation' = Meet My Menu AI speaks and
+  // listens; 'browse' = silent, so a screen reader reads the menu without the
+  // app talking over it. Requested by screen-reader users who never want the
+  // app to self-voice: without this the choice reset to 'conversation' on
+  // every launch and had to be re-made each time.
+  menuOpenMode?: MenuOpenMode; // default 'conversation'
 }
+
+export type MenuOpenMode = 'conversation' | 'browse';
 
 export interface DiningHistoryEntry {
   id: string;
@@ -131,4 +139,7 @@ export const EMPTY_PROFILE: UserProfile = {
   theme: 'dark',
   textScale: 'large',
   speechRate: 1,
+  // Conversation is the app's headline feature, so it stays the default for a
+  // new account; Settings makes Browse the permanent choice in one tap.
+  menuOpenMode: 'conversation',
 };

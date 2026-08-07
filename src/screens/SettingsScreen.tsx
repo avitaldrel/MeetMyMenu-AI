@@ -10,7 +10,7 @@ import { splitList, reviewAllergenInput, removeFromList } from '../util';
 import { setSpeechRate } from '../lib/speech';
 import { track } from '../lib/telemetry';
 import { configuredAppleShortcutUrl, isAppleMobileDevice } from '../lib/appleShortcut';
-import type { AppTheme, TextScale } from '../types';
+import type { AppTheme, TextScale, MenuOpenMode } from '../types';
 
 const THEME_OPTIONS: { value: AppTheme; label: string; hint: string }[] = [
   { value: 'dark', label: 'Dark', hint: 'Light text on a near-black background. Easiest on the eyes in low light.' },
@@ -27,6 +27,18 @@ const SPEECH_RATES: { value: number; label: string }[] = [
   { value: 0.8, label: 'Slow' },
   { value: 1, label: 'Normal' },
   { value: 1.25, label: 'Fast' },
+];
+const MENU_OPEN_MODES: { value: MenuOpenMode; label: string; hint: string }[] = [
+  {
+    value: 'conversation',
+    label: 'Talk with me',
+    hint: 'Meet My Menu AI reads the menu aloud and listens for your questions.',
+  },
+  {
+    value: 'browse',
+    label: 'Stay silent',
+    hint: 'Menus open silent so your screen reader can read them without the app talking. You can still start a conversation any time.',
+  },
 ];
 
 // A large, accessible segmented control (radiogroup). Each option is a 64px+
@@ -154,6 +166,7 @@ export default function SettingsScreen({ goBack, navigate }: ScreenProps) {
   const currentTheme: AppTheme = profile.theme ?? 'dark';
   const currentScale: TextScale = profile.textScale ?? 'large';
   const currentRate = profile.speechRate ?? 1;
+  const currentMenuOpenMode: MenuOpenMode = profile.menuOpenMode ?? 'conversation';
   const themeHint = THEME_OPTIONS.find((t) => t.value === currentTheme)?.hint ?? '';
 
   return (
@@ -195,6 +208,26 @@ export default function SettingsScreen({ goBack, navigate }: ScreenProps) {
         <p className="body" style={{ margin: '4px 0 0', fontSize: 'calc(14px * var(--text-scale))' }}>{themeHint}</p>
       </div>
 
+      {/* Screen-reader users who prefer to read menus themselves were having to
+          press Browse Menu on every launch, because the mode reset each time.
+          This makes that choice stick. */}
+      <div className="setting-block">
+        <span className="setting-label">When you open a menu</span>
+        <Segmented
+          legend="When you open a menu"
+          options={MENU_OPEN_MODES.map(({ value, label }) => ({ value, label }))}
+          value={currentMenuOpenMode}
+          onChange={(v) => {
+            update({ menuOpenMode: v });
+            const chosen = MENU_OPEN_MODES.find((m) => m.value === v);
+            announce(`${chosen?.label}. ${chosen?.hint ?? ''}`);
+          }}
+        />
+        <p className="body" style={{ margin: '4px 0 0', fontSize: 'calc(14px * var(--text-scale))' }}>
+          {MENU_OPEN_MODES.find((m) => m.value === currentMenuOpenMode)?.hint}
+        </p>
+      </div>
+
       <div className="setting-block">
         <span className="setting-label">Talking speed</span>
         <Segmented
@@ -208,6 +241,11 @@ export default function SettingsScreen({ goBack, navigate }: ScreenProps) {
             setSrStatus(`Talking speed ${SPEECH_RATES.find((r) => r.value === v)?.label}.`);
           }}
         />
+        {currentMenuOpenMode === 'browse' && (
+          <p className="body" style={{ margin: '4px 0 0', fontSize: 'calc(14px * var(--text-scale))' }}>
+            Only applies once you start a conversation, since menus open silently.
+          </p>
+        )}
       </div>
 
       <Heading>Your name</Heading>

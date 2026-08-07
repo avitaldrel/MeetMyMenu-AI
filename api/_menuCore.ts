@@ -246,13 +246,21 @@ export function priceSignals(text: string): number {
  */
 export function menuLikelihood(text: string): number {
   const prices = priceSignals(text);
-  const keywords = (
+  // Food and drink words are counted separately. Lumping them together let a
+  // bar list — dense with prices and the words "drinks"/"beverages" — score as
+  // high as a real food menu, so the wrong page could win the candidate race.
+  const foodWords = (
     text.match(
-      /\b(appetizers?|entr[ée]es?|desserts?|salads?|sandwich(?:es)?|burgers?|pizzas?|pasta|chicken|beef|seafood|soups?|sides?|starters?|beverages?|drinks?|breakfast|lunch|dinner|specials?)\b/gi
+      /\b(appetizers?|entr[ée]es?|desserts?|salads?|sandwich(?:es)?|burgers?|pizzas?|pasta|chicken|beef|seafood|soups?|sides?|starters?|breakfast|lunch|dinner|specials?)\b/gi
     ) ?? []
   ).length;
+  const drinkWords = (text.match(/\b(beverages?|drinks?|cocktails?|wines?|beers?)\b/gi) ?? []).length;
   const lengthBonus = Math.min(10, Math.floor(text.length / 4000));
-  return prices * 2 + Math.min(keywords, 40) + lengthBonus;
+  // Drink words still count as menu-ness — a full menu lists drinks too — but a
+  // page with NO food words at all is a drinks list, not the menu we came for.
+  const keywords = Math.min(foodWords, 40) + (foodWords > 0 ? Math.min(drinkWords, 8) : 0);
+  const base = prices * 2 + keywords + lengthBonus;
+  return foodWords === 0 ? Math.floor(base / 4) : base;
 }
 
 /** Hrefs on the page that look like links to a menu (absolute, deduped). */
@@ -278,11 +286,22 @@ export function findMenuLinks(html: string, baseUrl: string): string[] {
   return out.sort((a, b) => Number(scoreLink(b)) - Number(scoreLink(a)));
 }
 
-function scoreLink(url: string): number {
+// Links whose URL says the page covers only one narrow slice of the offering.
+// These are real menus, so they still rank — just below anything that might be
+// the food menu.
+const NARROW_MENU_URL =
+  /(drink|beverage|cocktail|mocktail|wine|beer|bar|liquor|spirit|libation|dessert|kids|children|happy[-_]?hour|brunch[-_]?drink)/i;
+
+export function scoreLink(url: string): number {
   let s = 0;
   if (/\.pdf(\?|$)/i.test(url)) s += 3;
   if (/menu/i.test(url)) s += 2;
   if (/food|dinner|lunch/i.test(url)) s += 1;
+  // A drinks PDF used to score 5 (pdf + "menu" in "drink-menu.pdf") and beat
+  // the actual dinner page at 3, which is how a tester searching for a
+  // restaurant ended up with its bar list and nothing to eat. The penalty has
+  // to exceed the PDF bonus, or "drinks-menu.pdf" still wins on format alone.
+  if (NARROW_MENU_URL.test(url)) s -= 4;
   return s;
 }
 
@@ -453,7 +472,10 @@ const PARSE_INSTRUCTIONS =
   'If no menu items are found, set categories to an empty array. ' +
   'Set "incomplete" to true if this looks like only PART of the menu — text cut off, ' +
   'sections referenced but missing, a page clearly continuing elsewhere, or unreadable areas. ' +
-  'Set it to false if the menu appears whole. ' +
+  'Judge this against the restaurant\'s WHOLE offering, not against the document in front of ' +
+  'you. A drinks-only, dessert-only, or kids-only list is a complete document but only PART of ' +
+  'the menu, so mark it incomplete and say which part it is. ' +
+  'Set it to false only if this looks like the restaurant\'s full food menu. ' +
   'When "incomplete" is true, set "incompleteReason" to a SHORT plain-language phrase a ' +
   'person would understand, naming what is missing if you can tell — for example ' +
   '"the drinks section is missing", "prices are not shown", or "the text was cut off". ' +
@@ -592,6 +614,51 @@ const EXPECTED_SECTIONS = ['appetizer', 'entree', 'entrée', 'dessert', 'beverag
 const TRUNCATION_CUES =
   /\b(continued|continues on|page \d+ of \d+|see (?:reverse|other side|next page)|cont'd)\b/i;
 
+// A document can be internally whole and still not be the menu the guest
+// wanted. A bar list has every section a bar list should have, so the model
+// correctly reports it as complete — "is this document complete" and "is this
+// the food menu" are simply different questions, and only the second one is
+// what someone deciding what to eat is asking. Reported by a blind tester who
+// searched for a restaurant, got its drinks PDF, and was left with "a good
+// list of things to drink, but no food".
+//
+// Checked by CATEGORY NAME rather than item names, and food is tested first,
+// so "Bar Snacks" and "Dessert Wines" land on the right side. Anything
+// unrecognised counts as food, keeping this one-directional: it can only flag
+// a menu that is unambiguously all drinks (or all sweets), never a real one.
+const FOOD_SECTION =
+  /\b(appetiz|starters?|entr[ée]es?|mains?|main course|plates?|sandwich|burgers?|pizzas?|pastas?|salads?|soups?|sides?|snacks?|bites?|tapas|antipast|primi|secondi|contorni|breakfast|brunch|lunch|dinner|supper|tacos?|burritos?|sushi|sashimi|rolls?|noodles?|ramen|rice|curr(?:y|ies)|seafood|fish|steaks?|chops?|grill|bbq|barbecue|chicken|beef|pork|lamb|veggie|vegetarian|vegan|kids?|children|specials?|platters?|combos?|bowls?|wraps?|subs?|gyros?|kebabs?|dumplings?|charcuterie|cheese board|raw bar|oysters?|small plates?|large plates?|share|for the table)\b/i;
+const DRINK_SECTION =
+  /\b(drinks?|beverages?|libations?|cocktails?|mocktails?|wines?|beers?|ales?|lagers?|ciders?|spirits?|liqueurs?|liquors?|bar|draft|draught|on tap|by the glass|bottles?|cellar|sake|soju|sodas?|juices?|smoothies?|coffee|espresso|teas?|cordials?|champagne|prosecco|sparkling|ros[ée]|whisk(?:e)?y|bourbon|scotch|gin|vodka|rum|tequila|mezcal|margaritas?|martinis?|sangria|aperitivo|digestivo|amaro|punch|shots?|pours?|flights?)\b/i;
+const DESSERT_SECTION =
+  /\b(desserts?|sweets?|pastries|pastry|gelato|sorbet|ice cream|cakes?|pies?|dolci|confections?)\b/i;
+
+type SectionKind = 'food' | 'drink' | 'dessert';
+
+/** Classify one category name. Unrecognised names count as food (see above). */
+export function classifySection(name: string): SectionKind {
+  if (FOOD_SECTION.test(name)) return 'food';
+  if (DRINK_SECTION.test(name)) return 'drink';
+  if (DESSERT_SECTION.test(name)) return 'dessert';
+  return 'food';
+}
+
+/**
+ * If every section is drinks (or every section is sweets), this is a partial
+ * menu no matter how internally complete it looks. Returns the reason, else null.
+ */
+export function narrowMenuReason(menu: ParsedMenu): string | null {
+  const kinds = menu.categories.filter((c) => c.items.length > 0).map((c) => classifySection(c.name));
+  if (kinds.length === 0) return null;
+  if (kinds.every((k) => k === 'drink')) {
+    return 'this is the drinks list — there is no food on it, so the kitchen menu is somewhere else';
+  }
+  if (kinds.every((k) => k === 'dessert')) {
+    return 'this is the dessert menu — the main courses are somewhere else';
+  }
+  return null;
+}
+
 export interface CompletenessAssessment {
   incomplete: boolean;
   reason?: string;
@@ -628,6 +695,12 @@ export function assessMenuCompleteness(
   }
   if (items === 0) {
     return { incomplete: true, reason: 'I could not find any dishes on it' };
+  }
+  // Before the size checks: a 60-item bar list is plenty big and perfectly
+  // whole, and would sail through every count below.
+  const narrow = narrowMenuReason(menu);
+  if (narrow) {
+    return { incomplete: true, reason: narrow };
   }
   if (items < MIN_CONFIDENT_ITEMS) {
     return {

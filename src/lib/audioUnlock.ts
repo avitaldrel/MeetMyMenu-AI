@@ -33,8 +33,20 @@ export function getAudioContext(): AudioContext | null {
 }
 
 export function unlockAudio(): void {
+  // Priming is a ONE-TIME gate. Re-running it on every tap was measurably
+  // costly and, on iOS, actively harmful: speechSynthesis is the same engine
+  // VoiceOver speaks through, so touching it mid-gesture contends with
+  // VoiceOver's own activation feedback — the reported symptom of a double-tap
+  // taking "a while before I hear the usual click". Priming SpeechSynthesis is
+  // lib/speech.ts's job anyway (it guards with _ttsPrimed and never cancels),
+  // so this module no longer touches it at all.
+  //
+  // The AudioContext still gets resumed on every call: iOS suspends it when
+  // the app is backgrounded, and resuming is cheap and idempotent.
+  const ctx = getAudioContext();
+  if (unlocked) return;
+
   try {
-    const ctx = getAudioContext();
     if (ctx) {
       // Silent buffer through the context satisfies the autoplay gate.
       const buf = ctx.createBuffer(1, 1, 22050);
@@ -42,17 +54,6 @@ export function unlockAudio(): void {
       src.buffer = buf;
       src.connect(ctx.destination);
       src.start(0);
-    }
-  } catch {}
-
-  try {
-    // Prime SpeechSynthesis so timer-driven fallback speech can play later.
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance('');
-      u.volume = 0;
-      window.speechSynthesis.speak(u);
-      window.speechSynthesis.cancel();
     }
   } catch {}
 
